@@ -9,7 +9,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -258,3 +259,67 @@ files.txt
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables
+.env
+.env.*
+
+# Python egg and packaging
+*.egg-info/
+*.egg
+dist/
+build/
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+cover/
+
+# Flask instance folder
+instance/
+.webassets-cache
+
+# SQLite database (if used for dev)
+db.sqlite3
+db.sqlite3-journal
+
+# VSCode settings (optional, keep if you use workspace settings)
+.vscode/
+.history/
+
+# Docker
+*.pid
+
+# OS files
+.DS_Store
+
+# Jupyter/IPython
+.ipynb_checkpoints
+
+# MyPy, Ruff, etc.
+.mypy_cache/
+.ruff_cache/
+
+# Pyright
+pyrightconfig.json
+.dmypy.json
+.pytype/
+.pyre/

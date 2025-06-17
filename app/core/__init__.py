@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from .config import Config
 from .extensions import db, migrate
@@ -9,7 +10,13 @@ from app.interfaces.controllers.cli import register_commands
 
 def create_app(config_class=Config):
     """Application factory pattern"""
-    app = Flask(__name__)
+    # Get the absolute path to the templates directory
+    template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'templates'))
+    static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'static'))
+
+    app = Flask(__name__,
+                template_folder=template_dir,
+                static_folder=static_dir)
     app.config.from_object(config_class)
 
     # Initialize extensions

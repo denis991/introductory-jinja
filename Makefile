@@ -108,3 +108,9 @@ kill-all-ports: ## Убить все процессы на портах 5000-501
 freeze: ## Заморозить зависимости
 	@.venv/bin/pip freeze > requirements.txt
 	@echo "✅ Зависимости заморожены в requirements.txt"
+
+
+# Для инициализации и наполнения БД
+init-db:
+	FLASK_APP=run.py flask init-db
+	FLASK_APP=run.py flask seed-db
