@@ -153,3 +153,51 @@ freeze: ## Заморозить зависимости
 init-db-old:
 	FLASK_APP=run.py flask init-db
 	FLASK_APP=run.py flask seed-db
+
+# Команды для очистки и архивирования проекта!!!!!!!!!!!!!!!!!!
+clean-project: ## Очистить проект от временных файлов
+	@echo "🧹 Очищаем проект от временных файлов..."
+	@python clean_project.py
+
+clean-all: clean clean-project ## Полная очистка (кэш + временные файлы)
+	@echo "✅ Полная очистка завершена"
+
+archive: clean-project ## Создать архив проекта
+	@echo "📦 Создаём архив проекта..."
+	@PROJECT_NAME=$$(basename $$(pwd)) && \
+	ARCHIVE_NAME="$${PROJECT_NAME}_$(shell date +%Y%m%d_%H%M%S).tar.gz" && \
+	tar --exclude='.git' --exclude='.venv' --exclude='venv' --exclude='node_modules' \
+		--exclude='__pycache__' --exclude='*.pyc' --exclude='.pytest_cache' \
+		--exclude='.coverage' --exclude='htmlcov' --exclude='.tox' \
+		--exclude='.vscode' --exclude='.idea' --exclude='.DS_Store' \
+		--exclude='*.log' --exclude='instance' --exclude='*.db' \
+		--exclude='*.sqlite' --exclude='*.sqlite3' \
+		-czf "$$ARCHIVE_NAME" . && \
+	echo "✅ Архив создан: $$ARCHIVE_NAME" && \
+	echo "📊 Размер архива: $$(du -h "$$ARCHIVE_NAME" | cut -f1)"
+
+archive-clean: clean-all archive ## Очистить и создать архив
+
+prepare-release: clean-project ## Подготовить проект к релизу
+	@echo "🚀 Подготовка проекта к релизу..."
+	@echo "✅ Проект готов к архивированию"
+	@echo "📋 Следующие шаги:"
+	@echo "   1. Проверьте код: make lint"
+	@echo "   2. Запустите тесты: make test"
+	@echo "   3. Создайте архив: make archive"
+
+lint: ## Проверить код линтерами
+	@echo "🔍 Проверяем код..."
+	@flake8
+	@echo "✅ Код проверен"
+
+format: ## Отформатировать код
+	@echo "🎨 Форматируем код..."
+	@black .
+	@isort .
+	@echo "✅ Код отформатирован"
+
+lint-fix: format ## Исправить проблемы с кодом
+	@echo "🔧 Исправляем проблемы..."
+	@autopep8 --in-place --recursive --aggressive --aggressive .
+	@echo "✅ Проблемы исправлены"
