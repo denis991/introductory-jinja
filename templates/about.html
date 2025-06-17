@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}About - Jinja Learning{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1 class="hero-title">About This Project</h1>
+    <p class="hero-subtitle">A comprehensive demonstration of Jinja2 templating capabilities</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Project Overview -->
+    <section class="card">
+      <h2>Project Overview</h2>
+      <div class="project-stats">
+        <div class="stat-item">
+          <strong>Start Date:</strong> {{ project_stats.start_date }}
+        </div>
+        <div class="stat-item">
+          <strong>Version:</strong> {{ project_stats.version }}
+        </div>
+        <div class="stat-item">
+          <strong>Features:</strong> {{ project_stats.features | length }}
+        </div>
+      </div>
+
+      <h3>Key Features</h3>
+      <ul class="feature-list">
+        {% for feature in project_stats.features %}
+          <li class="feature-item">{{ feature }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- Team Section -->
+    <section class="card">
+      <h2>Our Team ({{ team_members | length }} members)</h2>
+      <div class="team-grid">
+        {% for member in team_members %}
+          <div class="team-card">
+            <h3>{{ member.name }}</h3>
+            <p class="role">{{ member.role }}</p>
+            <div class="skills">
+              <strong>Skills:</strong>
+              {% for skill in member.skills %}
+                <span class="skill-tag">{{ skill }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Jinja Learning Section -->
+    <section class="card">
+      <h2>What You'll Learn</h2>
+      <div class="learning-points">
+        <div class="learning-item">
+          <h3>Template Inheritance</h3>
+          <p>How to use {% raw %}{% extends %}{% endraw %} and {% raw %}{% block %}{% endraw %} for reusable layouts</p>
+        </div>
+
+        <div class="learning-item">
+          <h3>Variable Output</h3>
+          <p>Displaying data with {% raw %}{{ variable }}{% endraw %} and applying filters</p>
+        </div>
+
+        <div class="learning-item">
+          <h3>Control Structures</h3>
+          <p>Using {% raw %}{% if %}{% endraw %}, {% raw %}{% for %}{% endraw %}, and {% raw %}{% include %}{% endraw %}</p>
+        </div>
+
+        <div class="learning-item">
+          <h3>Filters & Functions</h3>
+          <p>Transforming data with built-in filters like {% raw %}{{ text | upper }}{% endraw %}</p>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
