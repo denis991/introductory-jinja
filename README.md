@@ -5,6 +5,7 @@ A comprehensive prototype demonstrating Jinja2 templating capabilities with Flas
 ## 🚀 Features
 
 ### Jinja2 Features Demonstrated
+
 - **Template Inheritance**: Using `{% extends %}` and `{% block %}` for reusable layouts
 - **Variable Output**: Displaying data with `{{ variable }}` and filters
 - **Control Structures**: `{% if %}`, `{% for %}`, `{% include %}`
@@ -14,11 +15,13 @@ A comprehensive prototype demonstrating Jinja2 templating capabilities with Flas
 - **Data Manipulation**: Working with lists, dictionaries, and nested data
 
 ### Pages
+
 - **Home**: User profile, product showcase, Jinja features demo
 - **Products**: Product catalog with filtering, statistics, and category breakdown
 - **About**: Team information and project overview
 
 ### Modern UI/UX
+
 - Responsive design that works on all devices
 - Beautiful gradient backgrounds and modern card layouts
 - Interactive hover effects and smooth transitions
@@ -35,30 +38,35 @@ A comprehensive prototype demonstrating Jinja2 templating capabilities with Flas
 ## 📦 Installation & Setup
 
 ### Prerequisites
+
 - Python 3.7+
 - Make (for using the Makefile)
 
 ### Quick Start
 
 1. **Clone or navigate to the project directory**
+
    ```bash
    cd introductory-jinja
    ```
 
 2. **Set up the environment and install dependencies**
+
    ```bash
    make install
    ```
 
 3. **Run the application**
+
    ```bash
    make run
    ```
 
 4. **Open your browser and visit**
-   ```
-   http://localhost:5006
-   ```
+
+```bash
+http://localhost:5006
+```
 
 ## 🔧 Makefile Commands
 
@@ -72,7 +80,7 @@ The project includes a comprehensive Makefile for easy development:
 
 ## 📁 Project Structure
 
-```
+```tree
 introductory-jinja/
 ├── app.py                 # Flask application with routes
 ├── requirements.txt       # Python dependencies
@@ -103,6 +111,7 @@ This project is designed to help you learn:
 ## 🔍 Key Jinja Features Explained
 
 ### Template Inheritance
+
 ```jinja
 {% extends "base.html" %}
 {% block content %}
@@ -111,6 +120,7 @@ This project is designed to help you learn:
 ```
 
 ### Variable Output with Filters
+
 ```jinja
 {{ user.name | upper }}
 {{ items | length }} items
@@ -118,6 +128,7 @@ This project is designed to help you learn:
 ```
 
 ### Conditional Logic
+
 ```jinja
 {% if user.is_admin %}
   <span class="badge badge-admin">Administrator</span>
@@ -127,6 +138,7 @@ This project is designed to help you learn:
 ```
 
 ### Loops
+
 ```jinja
 {% for product in products %}
   <div class="product-card">
@@ -137,6 +149,7 @@ This project is designed to help you learn:
 ```
 
 ### Advanced Filters
+
 ```jinja
 {% set in_stock_count = products | selectattr('in_stock', 'equalto', true) | list | length %}
 {% set categories = products | map(attribute='category') | unique | list %}
@@ -145,13 +158,16 @@ This project is designed to help you learn:
 ## 🎨 Customization
 
 ### Adding New Pages
+
 1. Create a new route in `app.py`
 2. Create a new template file in `templates/`
 3. Extend the base template
 4. Add navigation link in `templates/partials/header.html`
 
 ### Styling
+
 The CSS is organized into logical sections:
+
 - Base styles and reset
 - Header and navigation
 - Hero sections
@@ -160,6 +176,7 @@ The CSS is organized into logical sections:
 - Responsive design
 
 ### Data Structure
+
 Modify the data in `app.py` routes to experiment with different data structures and see how Jinja handles them.
 
 ## 🚀 Next Steps
@@ -182,6 +199,7 @@ Once you're comfortable with this project, try:
 ## 🤝 Contributing
 
 Feel free to fork this project and experiment with it! Some ideas:
+
 - Add more Jinja features
 - Create new pages
 - Enhance the styling
