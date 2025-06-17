@@ -27,73 +27,90 @@ REQ := requirements.txt
 # Порт по умолчанию
 DEFAULT_PORT := 5006
 
-.PHONY: all venv install run kill-port kill-all-ports freeze clean
+.PHONY: all venv install run kill-port kill-all-ports freeze clean help setup dev test test-unit test-integration docker-build docker-run docker-compose-up docker-compose-down init-db seed-db
 
 all: venv install run
 
-venv:
-	@echo "⚙️  Создаём виртуальное окружение $(VENV)..."
-	@test -d $(VENV) || python3 -m venv $(VENV)
+help: ## Показать справку
+	@echo "Доступные команды:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+venv: ## Создать виртуальное окружение
+	@echo "⚙️  Создаём виртуальное окружение .venv..."
+	@python3 -m venv .venv
 	@echo "✅ Окружение готово."
 
-install: venv
-	@echo "📦 Устанавливаем зависимости из $(REQ)..."
-	$(PIP) install --upgrade pip
-	$(PIP) install -r $(REQ)
+install: ## Установить зависимости
+	@echo "📦 Устанавливаем зависимости из requirements.txt..."
+	@.venv/bin/pip install --upgrade pip
+	@.venv/bin/pip install -r requirements.txt
 	@echo "✅ Зависимости установлены."
 
-kill-port:
-	@echo "🔫 Очищаем порт $(or $(PORT),$(DEFAULT_PORT))..."
-	@if lsof -ti:$(or $(PORT),$(DEFAULT_PORT)) > /dev/null 2>&1; then \
-		echo "Найдены процессы на порту $(or $(PORT),$(DEFAULT_PORT)):"; \
-		lsof -i:$(or $(PORT),$(DEFAULT_PORT)); \
-		echo "Убиваем процессы..."; \
-		lsof -ti:$(or $(PORT),$(DEFAULT_PORT)) | xargs kill -9; \
-		echo "✅ Порт $(or $(PORT),$(DEFAULT_PORT)) очищен."; \
-	else \
-		echo "✅ Порт $(or $(PORT),$(DEFAULT_PORT)) свободен."; \
-	fi
-
-kill-all-ports:
-	@echo "🔫 Очищаем все порты..."
-	@echo "Внимание! Эта команда убьет ВСЕ процессы на ВСЕХ портах!"
-	@echo "Используйте с осторожностью!"
-	@read -p "Продолжить? (y/N): " confirm && [ "$$confirm" = "y" ] || exit 1
-	@echo "Убиваем все процессы на портах..."
-	@for port in $$(lsof -ti:1-65535 2>/dev/null); do \
-		echo "Убиваем процесс $$port"; \
-		kill -9 $$port 2>/dev/null || true; \
-	done
-	@echo "✅ Все порты очищены."
-
-run: install kill-port
+run: ## Запустить приложение
+	@echo "🔫 Очищаем порт $(DEFAULT_PORT)..."
+	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || true
+	@echo "✅ Порт $(DEFAULT_PORT) свободен."
 	@echo "🚀 Запуск Flask на порту $(DEFAULT_PORT)..."
-	# Экспортируем переменные окружения:
-	FLASK_APP=app.py \
-	FLASK_ENV=development \
-	FLASK_RUN_PORT=$(DEFAULT_PORT) \
-	$(FLASK) run
+	@echo "# Экспортируем переменные окружения:"
+	@echo "FLASK_APP=run.py \\"
+	@echo "        FLASK_ENV=development \\"
+	@echo "        FLASK_RUN_PORT=$(DEFAULT_PORT) \\"
+	@echo "        .venv/bin/flask run"
+	@FLASK_APP=run.py \
+		FLASK_ENV=development \
+		FLASK_RUN_PORT=$(DEFAULT_PORT) \
+		.venv/bin/flask run
 
-freeze: venv
-	@echo "📝 Замораживаем зависимости в $(REQ)..."
-	$(PIP) freeze > $(REQ)
-	@echo "✅ $(REQ) обновлён."
+setup: install init-db seed-db ## Полная настройка проекта
 
-clean:
-	@echo "🧹 Удаляем виртуальное окружение и кэш..."
-	rm -rf $(VENV) __pycache__ .pytest_cache
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	@echo "✅ Очистка завершена."
+dev: setup run ## Настройка и запуск для разработки
 
-# Дополнительные команды для разработки
-help:
-	@echo "Доступные команды:"
-	@echo "  make install        - Установить зависимости"
-	@echo "  make run           - Запустить приложение (автоматически очищает порт 5006)"
-	@echo "  make kill-port     - Очистить порт 5006 (или указать PORT=8080)"
-	@echo "  make kill-all-ports - Очистить ВСЕ порты (осторожно!)"
-	@echo "  make clean         - Очистить проект"
-	@echo ""
-	@echo "Примеры использования:"
-	@echo "  make kill-port PORT=8080  - Очистить порт 8080"
-	@echo "  make kill-port            - Очистить порт 5006 (по умолчанию)"
+test: ## Запустить тесты
+	@.venv/bin/python -m pytest tests/ -v
+
+test-unit: ## Запустить unit тесты
+	@.venv/bin/python -m pytest tests/unit/ -v
+
+test-integration: ## Запустить integration тесты
+	@.venv/bin/python -m pytest tests/integration/ -v
+
+clean: ## Очистить кэш Python
+	@find . -type d -name "__pycache__" -exec rm -rf {} +
+	@find . -type f -name "*.pyc" -delete
+
+docker-build: ## Собрать Docker образ
+	@docker build -t jinja-app .
+
+docker-run: ## Запустить Docker контейнер
+	@docker run -p $(DEFAULT_PORT):$(DEFAULT_PORT) jinja-app
+
+docker-compose-up: ## Запустить с Docker Compose
+	@docker-compose up --build
+
+docker-compose-down: ## Остановить Docker Compose
+	@docker-compose down
+
+init-db: ## Инициализировать базу данных
+	@FLASK_APP=run.py .venv/bin/flask init-db
+
+seed-db: ## Заполнить базу данных тестовыми данными
+	@FLASK_APP=run.py .venv/bin/flask seed-db
+
+kill-port: ## Убить процесс на порту $(DEFAULT_PORT)
+	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || echo "Порт $(DEFAULT_PORT) уже свободен"
+
+kill-all-ports: ## Убить все процессы на портах 5000-5010
+	@for port in {5000..5010}; do \
+		lsof -ti:$$port | xargs kill -9 2>/dev/null || true; \
+	done
+	@echo "✅ Все порты 5000-5010 очищены"
+
+freeze: ## Заморозить зависимости
+	@.venv/bin/pip freeze > requirements.txt
+	@echo "✅ Зависимости заморожены в requirements.txt"
+
+
+# Для инициализации и наполнения БД
+init-db:
+	FLASK_APP=run.py flask init-db
+	FLASK_APP=run.py flask seed-db

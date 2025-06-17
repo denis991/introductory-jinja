@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Jinja Learning{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1 class="hero-title">Welcome, {{ user.name | title }}!</h1>
+    <p class="hero-subtitle">Explore the power of Jinja2 templating</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- User Information Section -->
+    <section class="card">
+      <h2>User Profile</h2>
+      <div class="user-info">
+        <p><strong>Name:</strong> {{ user.name | upper }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Join Date:</strong> {{ user.join_date }}</p>
+        <p><strong>Status:</strong>
+          {% if user.is_admin %}
+            <span class="badge badge-admin">Administrator</span>
+          {% else %}
+            <span class="badge badge-user">Regular User</span>
+          {% endif %}
+        </p>
+      </div>
+    </section>
+
+    <!-- Simple List Section -->
+    <section class="card">
+      <h2>Fruit List ({{ items | length }} items)</h2>
+      <ul class="list">
+        {% for fruit in items %}
+          <li class="list-item">{{ fruit | lower | title }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- Products Section -->
+    <section class="card">
+      <h2>Featured Products</h2>
+      <div class="products-grid">
+        {% for product in products %}
+          <div class="product-card">
+            <h3>{{ product.name }}</h3>
+            <p class="price">${{ "%.2f" | format(product.price) }}</p>
+            <p class="category">{{ product.category }}</p>
+            <p class="stock">
+              {% if product.in_stock %}
+                <span class="badge badge-success">In Stock</span>
+              {% else %}
+                <span class="badge badge-error">Out of Stock</span>
+              {% endif %}
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="card">
+      <h2>Available Categories</h2>
+      <div class="categories">
+        {% for category in categories %}
+          <span class="category-tag">{{ category }}</span>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Jinja Features Demo -->
+    <section class="card">
+      <h2>Jinja Features Demo</h2>
+      <div class="features-demo">
+        <h3>Filters & Functions</h3>
+        <ul>
+          <li><strong>Length:</strong> {{ items | length }} items</li>
+          <li><strong>First item:</strong> {{ items | first }}</li>
+          <li><strong>Last item:</strong> {{ items | last }}</li>
+          <li><strong>Joined items:</strong> {{ items | join(', ') }}</li>
+        </ul>
+
+        <h3>Conditional Logic</h3>
+        <p>
+          {% if user.is_admin %}
+            You have admin privileges and can access all features.
+          {% elif user.name %}
+            Welcome back, {{ user.name }}!
+          {% else %}
+            Please log in to continue.
+          {% endif %}
+        </p>
+      </div>
+    </section>
+  </div>
+{% endblock %}
