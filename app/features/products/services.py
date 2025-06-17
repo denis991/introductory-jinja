@@ -1,6 +1,7 @@
 from typing import List, Optional
-from app.domain.interfaces import ProductRepository
+
 from app.domain.entities import Product
+from app.domain.interfaces import ProductRepository
 
 
 class ProductService:

@@ -1,11 +1,14 @@
-from typing import List, Dict, Any
-from app.domain.interfaces import UserRepository, ProductRepository
+from typing import Any, Dict
+
+from app.domain.interfaces import ProductRepository, UserRepository
 
 
 class HomeService:
     """Service layer for home page business logic"""
 
-    def __init__(self, user_repository: UserRepository, product_repository: ProductRepository):
+    def __init__(
+        self, user_repository: UserRepository, product_repository: ProductRepository
+    ):
         self.user_repository = user_repository
         self.product_repository = product_repository
 
@@ -24,5 +27,5 @@ class HomeService:
             "user": user,
             "items": items,
             "products": products,
-            "categories": categories
+            "categories": categories,
         }

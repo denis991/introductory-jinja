@@ -8,6 +8,10 @@
 #   kill-all-ports — убить все процессы на всех портах
 #   freeze   — зафиксировать текущие зависимости
 #   clean    — удалить окружение и кэш
+#   docker-dev — запустить всё в Docker (разработка)
+#   docker-prod — запустить всё в Docker (продакшн)
+#   docker-stop — остановить Docker контейнеры
+#   docker-clean — очистить Docker контейнеры и образы
 # ---------------------------------------------------
 
 # Shell
@@ -27,7 +31,7 @@ REQ := requirements.txt
 # Порт по умолчанию
 DEFAULT_PORT := 5006
 
-.PHONY: all venv install run kill-port kill-all-ports freeze clean help setup dev test test-unit test-integration docker-build docker-run docker-compose-up docker-compose-down init-db seed-db
+.PHONY: all venv install run kill-port kill-all-ports freeze clean help setup dev test test-unit test-integration docker-dev docker-prod docker-stop docker-clean docker-build docker-run docker-compose-up docker-compose-down init-db seed-db
 
 all: venv install run
 
@@ -78,6 +82,42 @@ clean: ## Очистить кэш Python
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@find . -type f -name "*.pyc" -delete
 
+# Docker команды
+docker-dev: ## Запустить всё в Docker (разработка)
+	@echo "🐳 Запускаем приложение в Docker (разработка)..."
+	@docker-compose up --build -d
+	@echo "⏳ Ждём запуска приложения..."
+	@sleep 10
+	@echo "✅ Приложение запущено на http://localhost:$(DEFAULT_PORT)"
+	@echo "📊 База данных доступна на localhost:5432"
+	@echo "🔍 Логи: docker-compose logs -f"
+
+docker-prod: ## Запустить всё в Docker (продакшн)
+	@echo "🐳 Запускаем приложение в Docker (продакшн)..."
+	@FLASK_ENV=production docker-compose -f docker-compose.yml up --build -d
+	@echo "✅ Приложение запущено в продакшн режиме"
+
+docker-stop: ## Остановить Docker контейнеры
+	@echo "🛑 Останавливаем Docker контейнеры..."
+	@docker-compose down
+	@echo "✅ Контейнеры остановлены"
+
+docker-clean: ## Очистить Docker контейнеры и образы
+	@echo "🧹 Очищаем Docker контейнеры и образы..."
+	@docker-compose down -v --rmi all
+	@docker system prune -f
+	@echo "✅ Docker очищен"
+
+docker-logs: ## Показать логи Docker контейнеров
+	@docker-compose logs -f
+
+docker-shell: ## Войти в контейнер приложения
+	@docker-compose exec web bash
+
+docker-db-shell: ## Войти в контейнер базы данных
+	@docker-compose exec db psql -U postgres -d jinja_app
+
+# Устаревшие команды (оставляем для совместимости)
 docker-build: ## Собрать Docker образ
 	@docker build -t jinja-app .
 
@@ -109,8 +149,7 @@ freeze: ## Заморозить зависимости
 	@.venv/bin/pip freeze > requirements.txt
 	@echo "✅ Зависимости заморожены в requirements.txt"
 
-
 # Для инициализации и наполнения БД
-init-db:
+init-db-old:
 	FLASK_APP=run.py flask init-db
 	FLASK_APP=run.py flask seed-db

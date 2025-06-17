@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template
+
 from app.features.home.services import HomeService
-from app.infra.db.repositories import SQLAlchemyUserRepository, SQLAlchemyProductRepository
+from app.infra.db.repositories import (SQLAlchemyProductRepository,
+                                       SQLAlchemyUserRepository)
 
 # Create blueprint
-home_bp = Blueprint('home', __name__)
+home_bp = Blueprint("home", __name__)
 
 # Initialize repositories and service
 user_repository = SQLAlchemyUserRepository()

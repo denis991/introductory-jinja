@@ -1,4 +1,5 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 from app.domain.interfaces import TeamRepository
 
 
@@ -13,7 +14,4 @@ class AboutService:
         team_members = self.team_repository.get_team_members()
         project_stats = self.team_repository.get_project_stats()
 
-        return {
-            "team_members": team_members,
-            "project_stats": project_stats
-        }
+        return {"team_members": team_members, "project_stats": project_stats}

@@ -1,11 +1,12 @@
 from dataclasses import dataclass
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
 
 
 @dataclass
 class User:
     """User domain entity"""
+
     id: Optional[int]
     name: str
     email: str
@@ -16,6 +17,7 @@ class User:
 @dataclass
 class Product:
     """Product domain entity"""
+
     id: Optional[int]
     name: str
     price: float
@@ -27,6 +29,7 @@ class Product:
 @dataclass
 class TeamMember:
     """Team member domain entity"""
+
     name: str
     role: str
     skills: List[str]
@@ -35,6 +38,7 @@ class TeamMember:
 @dataclass
 class ProjectStats:
     """Project statistics domain entity"""
+
     start_date: str
     version: str
     features: List[str]

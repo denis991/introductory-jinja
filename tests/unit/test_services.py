@@ -1,11 +1,11 @@
 import unittest
-from unittest.mock import Mock, MagicMock
 from datetime import datetime
+from unittest.mock import Mock
 
+from app.domain.entities import Product, ProjectStats, TeamMember, User
+from app.features.about.services import AboutService
 from app.features.home.services import HomeService
 from app.features.products.services import ProductService
-from app.features.about.services import AboutService
-from app.domain.entities import User, Product, TeamMember, ProjectStats
 
 
 class TestHomeService(unittest.TestCase):
@@ -24,11 +24,13 @@ class TestHomeService(unittest.TestCase):
             name="Alice",
             email="alice@example.com",
             is_admin=True,
-            join_date=datetime(2024, 1, 15)
+            join_date=datetime(2024, 1, 15),
         )
         mock_products = [
-            Product(id=1, name="Laptop", price=999.99, category="Electronics", in_stock=True),
-            Product(id=2, name="Book", price=19.99, category="Books", in_stock=True)
+            Product(
+                id=1, name="Laptop", price=999.99, category="Electronics", in_stock=True
+            ),
+            Product(id=2, name="Book", price=19.99, category="Books", in_stock=True),
         ]
 
         self.mock_user_repo.get_current_user.return_value = mock_user
@@ -41,7 +43,9 @@ class TestHomeService(unittest.TestCase):
         self.assertEqual(result["user"], mock_user)
         self.assertEqual(result["products"], mock_products)
         self.assertEqual(result["categories"], ["Electronics", "Books"])
-        self.assertEqual(result["items"], ["Apple", "Banana", "Cherry", "Orange", "Mango"])
+        self.assertEqual(
+            result["items"], ["Apple", "Banana", "Cherry", "Orange", "Mango"]
+        )
 
 
 class TestProductService(unittest.TestCase):
@@ -55,9 +59,30 @@ class TestProductService(unittest.TestCase):
         """Test that products are sorted by rating"""
         # Arrange
         mock_products = [
-            Product(id=1, name="Laptop", price=999.99, category="Electronics", in_stock=True, rating=4.0),
-            Product(id=2, name="Book", price=19.99, category="Books", in_stock=True, rating=4.5),
-            Product(id=3, name="Mug", price=12.50, category="Kitchen", in_stock=False, rating=3.8)
+            Product(
+                id=1,
+                name="Laptop",
+                price=999.99,
+                category="Electronics",
+                in_stock=True,
+                rating=4.0,
+            ),
+            Product(
+                id=2,
+                name="Book",
+                price=19.99,
+                category="Books",
+                in_stock=True,
+                rating=4.5,
+            ),
+            Product(
+                id=3,
+                name="Mug",
+                price=12.50,
+                category="Kitchen",
+                in_stock=False,
+                rating=3.8,
+            ),
         ]
         self.mock_product_repo.get_all_products.return_value = mock_products
 
@@ -86,7 +111,7 @@ class TestAboutService(unittest.TestCase):
         mock_project_stats = ProjectStats(
             start_date="2024-01-01",
             version="1.0.0",
-            features=["Feature 1", "Feature 2"]
+            features=["Feature 1", "Feature 2"],
         )
 
         self.mock_team_repo.get_team_members.return_value = mock_team_members
@@ -100,5 +125,5 @@ class TestAboutService(unittest.TestCase):
         self.assertEqual(result["project_stats"], mock_project_stats)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

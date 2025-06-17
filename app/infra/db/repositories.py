@@ -1,9 +1,12 @@
 from datetime import datetime
 from typing import List, Optional
-from app.core.extensions import db
-from app.domain.interfaces import UserRepository, ProductRepository, TeamRepository
-from app.domain.entities import User, Product, TeamMember, ProjectStats
-from .models import User as UserModel, Product as ProductModel
+
+from app.domain.entities import Product, ProjectStats, TeamMember, User
+from app.domain.interfaces import (ProductRepository, TeamRepository,
+                                   UserRepository)
+
+from .models import Product as ProductModel
+from .models import User as UserModel
 
 
 class SQLAlchemyUserRepository(UserRepository):
@@ -22,7 +25,7 @@ class SQLAlchemyUserRepository(UserRepository):
             name="Alice",
             email="alice@example.com",
             is_admin=True,
-            join_date=datetime(2024, 1, 15)
+            join_date=datetime(2024, 1, 15),
         )
 
 
@@ -54,18 +57,16 @@ class MockTeamRepository(TeamRepository):
             TeamMember(
                 name="Alice Johnson",
                 role="Developer",
-                skills=["Python", "Flask", "Jinja"]
+                skills=["Python", "Flask", "Jinja"],
             ),
             TeamMember(
-                name="Bob Smith",
-                role="Designer",
-                skills=["CSS", "HTML", "UI/UX"]
+                name="Bob Smith", role="Designer", skills=["CSS", "HTML", "UI/UX"]
             ),
             TeamMember(
                 name="Carol Davis",
                 role="Manager",
-                skills=["Project Management", "Agile"]
-            )
+                skills=["Project Management", "Agile"],
+            ),
         ]
 
     def get_project_stats(self) -> ProjectStats:
@@ -73,5 +74,10 @@ class MockTeamRepository(TeamRepository):
         return ProjectStats(
             start_date="2024-01-01",
             version="1.0.0",
-            features=["Jinja Templates", "CSS Styling", "Flask Backend", "Responsive Design"]
+            features=[
+                "Jinja Templates",
+                "CSS Styling",
+                "Flask Backend",
+                "Responsive Design",
+            ],
         )

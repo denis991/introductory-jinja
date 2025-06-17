@@ -1,5 +1,5 @@
-from typing import List, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List
 
 
 def format_price(price: float) -> str:
@@ -14,7 +14,7 @@ def format_date(date: datetime) -> str:
 
 def get_unique_categories(products: List[Dict[str, Any]]) -> List[str]:
     """Get unique categories from products"""
-    return list(set(product.get('category', '') for product in products))
+    return list(set(product.get("category", "") for product in products))
 
 
 def calculate_average_rating(ratings: List[float]) -> float:

@@ -7,13 +7,16 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=run.py
-ENV FLASK_ENV=production
+ENV FLASK_ENV=development
+ENV FLASK_DEBUG=1
 
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         gcc \
         postgresql-client \
+        netcat-traditional \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -25,11 +28,18 @@ COPY . .
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser
-RUN chown -R appuser:appuser /app
+
+# Make entrypoint script executable and set ownership
+RUN chmod +x docker-entrypoint.sh && chown -R appuser:appuser /app
+
 USER appuser
 
 # Expose port
 EXPOSE 5006
 
-# Run the application
-CMD ["python", "run.py"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5006/ || exit 1
+
+# Use entrypoint script
+ENTRYPOINT ["./docker-entrypoint.sh"]

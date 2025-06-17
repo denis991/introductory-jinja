@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from .entities import User, Product, TeamMember, ProjectStats
+
+from .entities import Product, ProjectStats, TeamMember, User
 
 
 class UserRepository(ABC):

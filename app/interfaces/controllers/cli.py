@@ -1,32 +1,33 @@
 import click
 from flask.cli import with_appcontext
+
 from app.core.extensions import db
 from app.infra.db.seed_data import seed_database
 
 
-@click.command('init-db')
+@click.command("init-db")
 @with_appcontext
 def init_db_command():
     """Initialize the database."""
     db.create_all()
-    click.echo('Initialized the database.')
+    click.echo("Initialized the database.")
 
 
-@click.command('seed-db')
+@click.command("seed-db")
 @with_appcontext
 def seed_db_command():
     """Seed the database with initial data."""
     seed_database()
-    click.echo('Database seeded successfully.')
+    click.echo("Database seeded successfully.")
 
 
-@click.command('drop-db')
+@click.command("drop-db")
 @with_appcontext
 def drop_db_command():
     """Drop all database tables."""
-    if click.confirm('Are you sure you want to drop all tables?'):
+    if click.confirm("Are you sure you want to drop all tables?"):
         db.drop_all()
-        click.echo('Dropped all database tables.')
+        click.echo("Dropped all database tables.")
 
 
 def register_commands(app):
