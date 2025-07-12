@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from app.domain.entities import Product, ProjectStats, TeamMember, User
 from app.domain.interfaces import (ProductRepository, TeamRepository,
-                                   UserRepository)
+                                  UserRepository)
 
 from .models import Product as ProductModel
 from .models import User as UserModel
@@ -72,7 +72,7 @@ class MockTeamRepository(TeamRepository):
     def get_project_stats(self) -> ProjectStats:
         """Get project statistics"""
         return ProjectStats(
-            start_date="2024-01-01",
+            start_date="2025-03-17",
             version="1.0.0",
             features=[
                 "Jinja Templates",

@@ -109,7 +109,7 @@ class TestAboutService(unittest.TestCase):
             TeamMember(name="Alice", role="Developer", skills=["Python", "Flask"])
         ]
         mock_project_stats = ProjectStats(
-            start_date="2024-01-01",
+            start_date="2025-03-17",
             version="1.0.0",
             features=["Feature 1", "Feature 2"],
         )

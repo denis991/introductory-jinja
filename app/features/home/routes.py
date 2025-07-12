@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 
 from app.features.home.services import HomeService
 from app.infra.db.repositories import (SQLAlchemyProductRepository,
-                                       SQLAlchemyUserRepository)
+                                      SQLAlchemyUserRepository)
 
 # Create blueprint
 home_bp = Blueprint("home", __name__)
