@@ -1,0 +1,367 @@
+mindmap
+  root((Introductory Jinja Project
+Flask + Jinja2 + SQLAlchemy))
+    📁 PROJECT ROOT
+      📂 app
+        Основное приложение
+        Вся бизнес-логика
+      📂 static
+        Статические файлы
+        CSS, JS, изображения
+      📂 templates
+        HTML шаблоны
+        Jinja2 templates
+      📂 tests
+        Тесты
+        Unit + Integration
+      📂 resources
+        Документация
+        Гайды и ресурсы
+      📄 requirements.txt
+        Зависимости Python
+        pip packages
+      📄 run.py
+        Точка входа
+        Запуск приложения
+      📄 app.py
+        Альтернативная точка входа
+        Flask factory
+      📄 README.md
+        Описание проекта
+        Документация
+    🏗️ APP ARCHITECTURE
+      📂 core
+        Ядро приложения
+        Настройки и расширения
+        📄 __init__.py
+          Инициализация
+          Blueprint registration
+        📄 config.py
+          Конфигурация
+          Environment variables
+        📄 extensions.py
+          Flask расширения
+          SQLAlchemy, etc.
+      📂 domain
+        Бизнес-логика
+        Clean Architecture
+        📄 __init__.py
+          Domain package
+        📄 entities.py
+          Бизнес-сущности
+          Product, User, etc.
+        📄 interfaces.py
+          Интерфейсы
+          Repository contracts
+      📂 features
+        Модули функциональности
+        Feature-based organization
+        📂 about
+          Страница "О нас"
+          About feature module
+          📄 __init__.py
+            Blueprint creation
+          📄 routes.py
+            URL маршруты
+            @bp.route decorators
+          📄 services.py
+            Бизнес-логика
+            Business operations
+        📂 home
+          Главная страница
+          Home feature module
+          📄 __init__.py
+            Blueprint creation
+          📄 routes.py
+            URL маршруты
+            Home page routes
+          📄 services.py
+            Бизнес-логика
+            Home page logic
+        📂 products
+          Продукты
+          Products feature module
+          📄 __init__.py
+            Blueprint creation
+          📄 routes.py
+            URL маршруты
+            Product CRUD routes
+          📄 services.py
+            Бизнес-логика
+            Product operations
+      📂 infra
+        Инфраструктура
+        External dependencies
+        📄 __init__.py
+          Infrastructure package
+        📂 db
+          База данных
+          Database layer
+          📄 __init__.py
+            DB package
+          📄 models.py
+            SQLAlchemy модели
+            Database tables
+          📄 repositories.py
+            CRUD операции
+            Data access layer
+          📄 seed_data.py
+            Начальные данные
+            Sample data
+      📂 interfaces
+        Интерфейсы пользователя
+        UI layer
+        📄 __init__.py
+          Interfaces package
+        📂 controllers
+          Контроллеры
+          Request handlers
+          📄 cli.py
+            CLI команды
+            Management commands
+        📂 static
+          Статика
+          CSS, JS files
+          📄 style.css
+            Основные стили
+            Application CSS
+        📂 templates
+          Шаблоны
+          Jinja2 templates
+          📂 partials
+            Частичные шаблоны
+            Reusable components
+            📄 header.html
+              Заголовок
+              Navigation header
+      📂 models
+        Модели (устаревшие)
+        Legacy models
+      📂 shared
+        Общие утилиты
+        Shared utilities
+        📄 __init__.py
+          Shared package
+        📄 utils.py
+          Вспомогательные функции
+          Helper functions
+      📄 __init__.py
+        Инициализация приложения
+        App factory
+    🎨 TEMPLATES STRUCTURE
+      📄 base.html
+        Базовый шаблон
+        Layout template
+      📂 about
+        About templates
+        About page templates
+        📄 about.html
+          Страница "О нас"
+          About page template
+      📂 home
+        Home templates
+        Home page templates
+        📄 index.html
+          Главная страница
+          Home page template
+      📂 products
+        Product templates
+        Product page templates
+        📄 products.html
+          Список продуктов
+          Products list template
+        📄 product_detail.html
+          Детали продукта
+          Product detail template
+      📂 partials
+        Частичные шаблоны
+        Reusable components
+        📄 header.html
+          Частичный шаблон - заголовок
+          Navigation component
+    🎯 STATIC FILES
+      📄 style.css
+        Основные стили
+        Main CSS file
+      📂 img
+        Изображения
+        Images and icons
+        📄 favicon.ico
+          Иконка сайта
+          Website favicon
+        📄 favicon-16x16.png
+          Маленькая иконка
+          Small favicon
+        📄 favicon-32x32.png
+          Средняя иконка
+          Medium favicon
+        📄 apple-touch-icon.png
+          Иконка для iOS
+          iOS app icon
+        📄 android-chrome-192x192.png
+          Иконка для Android
+          Android app icon
+        📄 android-chrome-512x512.png
+          Большая иконка для Android
+          Large Android icon
+        📄 site.webmanifest
+          PWA манифест
+          Progressive Web App
+    🧪 TESTING STRUCTURE
+      📄 __init__.py
+        Tests package
+      📂 integration
+        Интеграционные тесты
+        End-to-end tests
+        📄 __init__.py
+          Integration package
+        📄 test_routes.py
+          Тесты маршрутов
+          Route testing
+      📂 unit
+        Модульные тесты
+        Unit tests
+        📄 __init__.py
+          Unit package
+        📄 test_services.py
+          Тесты сервисов
+          Service testing
+    📚 RESOURCES
+      📄 py+jinfa.md
+        Гайд по изучению Python
+        Python learning guide
+      📄 ARCHITECTURE.md
+        Описание архитектуры
+        Architecture documentation
+      📄 CLEANUP_README.md
+        Инструкции по очистке
+        Cleanup instructions
+      📄 new-architecture.md
+        Новая архитектура
+        New architecture docs
+      📄 project-mindmap.md
+        Текстовый mindmap
+        Text mindmap
+      📄 project-mindmap.mmd
+        Mermaid mindmap
+        Visual mindmap
+    🔄 DATA FLOW
+      🌐 Browser Request
+        HTTP запрос
+        User request
+      📍 URL Route
+        Маршрутизация
+        URL routing
+      🔧 Service Layer
+        Бизнес-логика
+        Business logic
+      🗄️ Repository
+        Доступ к данным
+        Data access
+      📊 Database Model
+        Модели БД
+        Database models
+      💾 Database
+        PostgreSQL
+        Database storage
+      📊 Model → Repository → Service → Route
+        Обратный поток
+        Response flow
+      🎨 Template Rendering
+        Рендеринг шаблонов
+        Jinja2 rendering
+      🌐 HTML Response
+        HTML ответ
+        Final response
+    🏛️ ARCHITECTURE PATTERNS
+      🎨 Interface Layer
+        templates/, static/
+        UI presentation
+      🔧 Application Layer
+        features/, services.py
+        Business logic
+      🏢 Domain Layer
+        domain/, entities.py
+        Core business rules
+      🗄️ Infrastructure Layer
+        infra/, db/
+        External dependencies
+      Feature-Based Organization
+        Модульная структура
+        Feature modules
+      Dependency Inversion
+        Инверсия зависимостей
+        Clean Architecture
+    🛠️ TECHNOLOGY STACK
+      🐍 Python 3.x
+        Основной язык
+        Main language
+      🌶️ Flask
+        Web framework
+        Micro web framework
+      🗄️ SQLAlchemy
+        ORM
+        Object-Relational Mapping
+      🐘 PostgreSQL
+        База данных
+        Database
+      🎨 Jinja2
+        Template engine
+        HTML templating
+      🎯 HTML/CSS
+        Frontend
+        Markup and styling
+      📱 PWA
+        Progressive Web App
+        Mobile app features
+      🧪 pytest
+        Testing framework
+        Test runner
+      🐳 Docker
+        Containerization
+        Deployment
+      📦 pip
+        Package management
+        Dependencies
+    🎯 KEY CONCEPTS
+      Blueprint Pattern
+        Модульные приложения
+        Modular Flask apps
+      Repository Pattern
+        Абстракция данных
+        Data abstraction
+      Service Layer
+        Бизнес-логика
+        Business operations
+      Template Inheritance
+        Наследование шаблонов
+        Template hierarchy
+    🚀 DEPLOYMENT
+      Development
+        Локальная разработка
+        Local development
+      Production
+        Продакшн деплой
+        Production deployment
+    📈 LEARNING PATH
+      🔍 Explore
+        Изучение проекта
+        Project exploration
+      📖 Read
+        Чтение кода
+        Code reading
+      ✏️ Modify
+        Изменение кода
+        Code modification
+      ➕ Add
+        Добавление фич
+        Feature addition
+      🧪 Test
+        Написание тестов
+        Test writing
+      🏗️ Refactor
+        Рефакторинг
+        Code improvement
+      🚀 Deploy
+        Деплой
+        Deployment

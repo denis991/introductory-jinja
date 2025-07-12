@@ -1,0 +1,215 @@
+flowchart LR
+    %% Main Project Structure
+    A["📁 Introductory Jinja Project<br/>Flask + Jinja2 + SQLAlchemy"]
+
+    %% Core Structure
+    A --> B["📂 app/ - Основное приложение<br/>Вся бизнес-логика"]
+    A --> C["📂 static/ - Статические файлы<br/>CSS, JS, изображения"]
+    A --> D["📂 templates/ - HTML шаблоны<br/>Jinja2 templates"]
+    A --> E["📂 tests/ - Тесты<br/>Unit + Integration"]
+    A --> F["📂 resources/ - Документация<br/>Гайды и ресурсы"]
+    A --> G["📄 requirements.txt - Зависимости Python<br/>pip packages"]
+    A --> H["📄 run.py - Точка входа<br/>Запуск приложения"]
+
+    %% App Architecture
+    B --> I["🏗️ APP ARCHITECTURE<br/>Clean Architecture"]
+
+    %% Core Layer
+    I --> J["📂 core/ - Ядро приложения<br/>Настройки и расширения"]
+    J --> J1["📄 __init__.py - Инициализация<br/>Blueprint registration"]
+    J --> J2["📄 config.py - Конфигурация<br/>Environment variables"]
+    J --> J3["📄 extensions.py - Flask расширения<br/>SQLAlchemy, etc."]
+
+    %% Domain Layer
+    I --> K["📂 domain/ - Бизнес-логика<br/>Clean Architecture"]
+    K --> K1["📄 __init__.py - Domain package"]
+    K --> K2["📄 entities.py - Бизнес-сущности<br/>Product, User, etc."]
+    K --> K3["📄 interfaces.py - Интерфейсы<br/>Repository contracts"]
+
+    %% Features Layer
+    I --> L["📂 features/ - Модули функциональности<br/>Feature-based organization"]
+
+    %% About Feature
+    L --> M["📂 about/ - Страница 'О нас'<br/>About feature module"]
+    M --> M1["📄 __init__.py - Blueprint creation"]
+    M --> M2["📄 routes.py - URL маршруты<br/>@bp.route decorators"]
+    M --> M3["📄 services.py - Бизнес-логика<br/>Business operations"]
+
+    %% Home Feature
+    L --> N["📂 home/ - Главная страница<br/>Home feature module"]
+    N --> N1["📄 __init__.py - Blueprint creation"]
+    N --> N2["📄 routes.py - URL маршруты<br/>Home page routes"]
+    N --> N3["📄 services.py - Бизнес-логика<br/>Home page logic"]
+
+    %% Products Feature
+    L --> O["📂 products/ - Продукты<br/>Products feature module"]
+    O --> O1["📄 __init__.py - Blueprint creation"]
+    O --> O2["📄 routes.py - URL маршруты<br/>Product CRUD routes"]
+    O --> O3["📄 services.py - Бизнес-логика<br/>Product operations"]
+
+    %% Infrastructure Layer
+    I --> P["📂 infra/ - Инфраструктура<br/>External dependencies"]
+    P --> P1["📄 __init__.py - Infrastructure package"]
+    P --> Q["📂 db/ - База данных<br/>Database layer"]
+    Q --> Q1["📄 __init__.py - DB package"]
+    Q --> Q2["📄 models.py - SQLAlchemy модели<br/>Database tables"]
+    Q --> Q3["📄 repositories.py - CRUD операции<br/>Data access layer"]
+    Q --> Q4["📄 seed_data.py - Начальные данные<br/>Sample data"]
+
+    %% Interfaces Layer
+    I --> R["📂 interfaces/ - Интерфейсы пользователя<br/>UI layer"]
+    R --> R1["📄 __init__.py - Interfaces package"]
+    R --> S["📂 controllers/ - Контроллеры<br/>Request handlers"]
+    S --> S1["📄 cli.py - CLI команды<br/>Management commands"]
+    R --> T["📂 static/ - Статика<br/>CSS, JS files"]
+    T --> T1["📄 style.css - Основные стили<br/>Application CSS"]
+    R --> U["📂 templates/ - Шаблоны<br/>Jinja2 templates"]
+    U --> V["📂 partials/ - Частичные шаблоны<br/>Reusable components"]
+    V --> V1["📄 header.html - Заголовок<br/>Navigation header"]
+
+    %% Shared Layer
+    I --> W["📂 shared/ - Общие утилиты<br/>Shared utilities"]
+    W --> W1["📄 __init__.py - Shared package"]
+    W --> W2["📄 utils.py - Вспомогательные функции<br/>Helper functions"]
+
+    %% App Init
+    B --> X["📄 __init__.py - Инициализация приложения<br/>App factory"]
+
+    %% Templates Structure
+    D --> Y["🎨 TEMPLATES STRUCTURE"]
+    Y --> Y1["📄 base.html - Базовый шаблон<br/>Layout template"]
+    Y --> Z["📂 about/ - About templates<br/>About page templates"]
+    Z --> Z1["📄 about.html - Страница 'О нас'<br/>About page template"]
+    Y --> AA["📂 home/ - Home templates<br/>Home page templates"]
+    AA --> AA1["📄 index.html - Главная страница<br/>Home page template"]
+    Y --> BB["📂 products/ - Product templates<br/>Product page templates"]
+    BB --> BB1["📄 products.html - Список продуктов<br/>Products list template"]
+    BB --> BB2["📄 product_detail.html - Детали продукта<br/>Product detail template"]
+    Y --> CC["📂 partials/ - Частичные шаблоны<br/>Reusable components"]
+    CC --> CC1["📄 header.html - Частичный шаблон - заголовок<br/>Navigation component"]
+
+    %% Static Files
+    C --> DD["🎯 STATIC FILES"]
+    DD --> DD1["📄 style.css - Основные стили<br/>Main CSS file"]
+    DD --> EE["📂 img/ - Изображения<br/>Images and icons"]
+    EE --> EE1["📄 favicon.ico - Иконка сайта<br/>Website favicon"]
+    EE --> EE2["📄 favicon-16x16.png - Маленькая иконка<br/>Small favicon"]
+    EE --> EE3["📄 favicon-32x32.png - Средняя иконка<br/>Medium favicon"]
+    EE --> EE4["📄 apple-touch-icon.png - Иконка для iOS<br/>iOS app icon"]
+    EE --> EE5["📄 android-chrome-192x192.png - Иконка для Android<br/>Android app icon"]
+    EE --> EE6["📄 android-chrome-512x512.png - Большая иконка для Android<br/>Large Android icon"]
+    EE --> EE7["📄 site.webmanifest - PWA манифест<br/>Progressive Web App"]
+
+    %% Testing Structure
+    E --> FF["🧪 TESTING STRUCTURE"]
+    FF --> FF1["📄 __init__.py - Tests package"]
+    FF --> GG["📂 integration/ - Интеграционные тесты<br/>End-to-end tests"]
+    GG --> GG1["📄 __init__.py - Integration package"]
+    GG --> GG2["📄 test_routes.py - Тесты маршрутов<br/>Route testing"]
+    FF --> HH["📂 unit/ - Модульные тесты<br/>Unit tests"]
+    HH --> HH1["📄 __init__.py - Unit package"]
+    HH --> HH2["📄 test_services.py - Тесты сервисов<br/>Service testing"]
+
+    %% Resources
+    F --> II["📚 RESOURCES"]
+    II --> II1["📄 py+jinfa.md - Гайд по изучению Python<br/>Python learning guide"]
+    II --> II2["📄 ARCHITECTURE.md - Описание архитектуры<br/>Architecture documentation"]
+    II --> II3["📄 CLEANUP_README.md - Инструкции по очистке<br/>Cleanup instructions"]
+    II --> II4["📄 new-architecture.md - Новая архитектура<br/>New architecture docs"]
+    II --> II5["📄 project-mindmap.md - Текстовый mindmap<br/>Text mindmap"]
+    II --> II6["📄 project-mindmap.mmd - Mermaid mindmap<br/>Visual mindmap"]
+
+    %% Data Flow
+    JJ["🔄 DATA FLOW<br/>Request Processing"]
+    JJ --> JJ1["🌐 Browser Request<br/>HTTP запрос<br/>User request"]
+    JJ1 --> JJ2["📍 URL Route<br/>Маршрутизация<br/>URL routing"]
+    JJ2 --> JJ3["🔧 Service Layer<br/>Бизнес-логика<br/>Business logic"]
+    JJ3 --> JJ4["🗄️ Repository<br/>Доступ к данным<br/>Data access"]
+    JJ4 --> JJ5["📊 Database Model<br/>Модели БД<br/>Database models"]
+    JJ5 --> JJ6["💾 Database<br/>PostgreSQL<br/>Database storage"]
+    JJ6 --> JJ7["📊 Model → Repository → Service → Route<br/>Обратный поток<br/>Response flow"]
+    JJ7 --> JJ8["🎨 Template Rendering<br/>Рендеринг шаблонов<br/>Jinja2 rendering"]
+    JJ8 --> JJ9["🌐 HTML Response<br/>HTML ответ<br/>Final response"]
+
+    %% Architecture Patterns
+    KK["🏛️ ARCHITECTURE PATTERNS<br/>Clean Architecture"]
+    KK --> KK1["🎨 Interface Layer<br/>templates/, static/<br/>UI presentation"]
+    KK --> KK2["🔧 Application Layer<br/>features/, services.py<br/>Business logic"]
+    KK --> KK3["🏢 Domain Layer<br/>domain/, entities.py<br/>Core business rules"]
+    KK --> KK4["🗄️ Infrastructure Layer<br/>infra/, db/<br/>External dependencies"]
+    KK --> KK5["Feature-Based Organization<br/>Модульная структура<br/>Feature modules"]
+    KK --> KK6["Dependency Inversion<br/>Инверсия зависимостей<br/>Clean Architecture"]
+
+    %% Technology Stack
+    LL["🛠️ TECHNOLOGY STACK<br/>Used Technologies"]
+    LL --> LL1["🐍 Python 3.x<br/>Основной язык<br/>Main language"]
+    LL --> LL2["🌶️ Flask<br/>Web framework<br/>Micro web framework"]
+    LL --> LL3["🗄️ SQLAlchemy<br/>ORM<br/>Object-Relational Mapping"]
+    LL --> LL4["🐘 PostgreSQL<br/>База данных<br/>Database"]
+    LL --> LL5["🎨 Jinja2<br/>Template engine<br/>HTML templating"]
+    LL --> LL6["🎯 HTML/CSS<br/>Frontend<br/>Markup and styling"]
+    LL --> LL7["📱 PWA<br/>Progressive Web App<br/>Mobile app features"]
+    LL --> LL8["🧪 pytest<br/>Testing framework<br/>Test runner"]
+    LL --> LL9["🐳 Docker<br/>Containerization<br/>Deployment"]
+
+    %% Key Concepts
+    MM["🎯 KEY CONCEPTS<br/>Architecture Patterns"]
+    MM --> MM1["Blueprint Pattern<br/>Модульные приложения<br/>Modular Flask apps"]
+    MM --> MM2["Repository Pattern<br/>Абстракция данных<br/>Data abstraction"]
+    MM --> MM3["Service Layer<br/>Бизнес-логика<br/>Business operations"]
+    MM --> MM4["Template Inheritance<br/>Наследование шаблонов<br/>Template hierarchy"]
+
+    %% Deployment
+    NN["🚀 DEPLOYMENT<br/>Application Deployment"]
+    NN --> NN1["Development<br/>Локальная разработка<br/>Local development"]
+    NN --> NN2["Production<br/>Продакшн деплой<br/>Production deployment"]
+
+    %% Learning Path
+    OO["📈 LEARNING PATH<br/>How to Study This Project"]
+    OO --> OO1["🔍 Explore<br/>Изучение проекта<br/>Project exploration"]
+    OO --> OO2["📖 Read<br/>Чтение кода<br/>Code reading"]
+    OO --> OO3["✏️ Modify<br/>Изменение кода<br/>Code modification"]
+    OO --> OO4["➕ Add<br/>Добавление фич<br/>Feature addition"]
+    OO --> OO5["🧪 Test<br/>Написание тестов<br/>Test writing"]
+    OO --> OO6["🏗️ Refactor<br/>Рефакторинг<br/>Code improvement"]
+    OO --> OO7["🚀 Deploy<br/>Деплой<br/>Deployment"]
+
+    %% Main connections
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+    A --> H
+
+    %% Data flow connections
+    JJ1 --> JJ2 --> JJ3 --> JJ4 --> JJ5 --> JJ6
+    JJ6 --> JJ7 --> JJ8 --> JJ9
+
+    %% Styling with better colors and contrast
+    style A fill:#FF6B6B,stroke:#FF6B6B,color:#FFFFFF,stroke-width:3px
+    style I fill:#4ECDC4,stroke:#4ECDC4,color:#FFFFFF,stroke-width:2px
+    style JJ fill:#45B7D1,stroke:#45B7D1,color:#FFFFFF,stroke-width:2px
+    style KK fill:#96CEB4,stroke:#96CEB4,color:#FFFFFF,stroke-width:2px
+    style LL fill:#FFEAA7,stroke:#FFEAA7,color:#000000,stroke-width:2px
+    style MM fill:#DDA0DD,stroke:#DDA0DD,color:#FFFFFF,stroke-width:2px
+    style NN fill:#98D8C8,stroke:#98D8C8,color:#FFFFFF,stroke-width:2px
+    style OO fill:#F7DC6F,stroke:#F7DC6F,color:#000000,stroke-width:2px
+
+    %% Feature styling
+    style M fill:#FFB6C1,stroke:#FFB6C1,color:#000000
+    style N fill:#FFB6C1,stroke:#FFB6C1,color:#000000
+    style O fill:#FFB6C1,stroke:#FFB6C1,color:#000000
+
+    %% Database styling
+    style Q fill:#87CEEB,stroke:#87CEEB,color:#000000
+
+    %% Templates styling
+    style Y fill:#DDA0DD,stroke:#DDA0DD,color:#FFFFFF
+
+    %% Static styling
+    style DD fill:#98FB98,stroke:#98FB98,color:#000000
+
+    %% Testing styling
+    style FF fill:#F0E68C,stroke:#F0E68C,color:#000000

@@ -1,0 +1,140 @@
+flowchart LR
+    %% Main Project Structure
+    A["📁 Introductory Jinja Project<br/>Flask + Jinja2 + SQLAlchemy"]
+
+    %% Core Structure - Compact Layout
+    A --> B["📂 app/ - Основное приложение"]
+    A --> C["📂 static/ - Статические файлы"]
+    A --> D["📂 templates/ - HTML шаблоны"]
+    A --> E["📂 tests/ - Тесты"]
+    A --> F["📂 resources/ - Документация"]
+
+    %% App Architecture - Grouped
+    B --> I["🏗️ APP ARCHITECTURE"]
+
+    %% Core & Domain - Side by Side
+    I --> J["📂 core/ - Ядро приложения"]
+    I --> K["📂 domain/ - Бизнес-логика"]
+
+    %% Features - Compact
+    I --> L["📂 features/ - Модули функциональности"]
+    L --> M["📂 about/ - Страница 'О нас'"]
+    L --> N["📂 home/ - Главная страница"]
+    L --> O["📂 products/ - Продукты"]
+
+    %% Infrastructure & Interfaces - Side by Side
+    I --> P["📂 infra/ - Инфраструктура"]
+    I --> R["📂 interfaces/ - Интерфейсы"]
+
+    %% Database - Compact
+    P --> Q["📂 db/ - База данных"]
+    Q --> Q1["📄 models.py - SQLAlchemy модели"]
+    Q --> Q2["📄 repositories.py - CRUD операции"]
+
+    %% Templates Structure - Compact
+    D --> Y["🎨 TEMPLATES"]
+    Y --> Y1["📄 base.html - Базовый шаблон"]
+    Y --> Z["📂 about/ - About templates"]
+    Y --> AA["📂 home/ - Home templates"]
+    Y --> BB["📂 products/ - Product templates"]
+    Y --> CC["📂 partials/ - Частичные шаблоны"]
+
+    %% Static Files - Compact
+    C --> DD["🎯 STATIC FILES"]
+    DD --> DD1["📄 style.css - Основные стили"]
+    DD --> EE["📂 img/ - Изображения и иконки"]
+
+    %% Testing - Compact
+    E --> FF["🧪 TESTING"]
+    FF --> GG["📂 integration/ - Интеграционные тесты"]
+    FF --> HH["📂 unit/ - Модульные тесты"]
+
+    %% Resources - Compact
+    F --> II["📚 RESOURCES"]
+    II --> II1["📄 py+jinfa.md - Гайд по изучению Python"]
+    II --> II2["📄 ARCHITECTURE.md - Описание архитектуры"]
+    II --> II3["📄 project-mindmap.md - Текстовый mindmap"]
+
+    %% Data Flow - Compact Horizontal
+    JJ["🔄 DATA FLOW"]
+    JJ --> JJ1["🌐 Browser Request"]
+    JJ1 --> JJ2["📍 URL Route"]
+    JJ2 --> JJ3["🔧 Service Layer"]
+    JJ3 --> JJ4["🗄️ Repository"]
+    JJ4 --> JJ5["📊 Database Model"]
+    JJ5 --> JJ6["💾 Database"]
+    JJ6 --> JJ7["🎨 Template Rendering"]
+    JJ7 --> JJ8["🌐 HTML Response"]
+
+    %% Architecture Patterns - Compact
+    KK["🏛️ ARCHITECTURE PATTERNS"]
+    KK --> KK1["🎨 Interface Layer"]
+    KK --> KK2["🔧 Application Layer"]
+    KK --> KK3["🏢 Domain Layer"]
+    KK --> KK4["🗄️ Infrastructure Layer"]
+
+    %% Technology Stack - Compact Grid
+    LL["🛠️ TECHNOLOGY STACK"]
+    LL --> LL1["🐍 Python 3.x"]
+    LL --> LL2["🌶️ Flask"]
+    LL --> LL3["🗄️ SQLAlchemy"]
+    LL --> LL4["🐘 PostgreSQL"]
+    LL --> LL5["🎨 Jinja2"]
+    LL --> LL6["🎯 HTML/CSS"]
+    LL --> LL7["📱 PWA"]
+    LL --> LL8["🧪 pytest"]
+    LL --> LL9["🐳 Docker"]
+
+    %% Key Concepts - Compact
+    MM["🎯 KEY CONCEPTS"]
+    MM --> MM1["Blueprint Pattern"]
+    MM --> MM2["Repository Pattern"]
+    MM --> MM3["Service Layer"]
+    MM --> MM4["Template Inheritance"]
+
+    %% Learning Path - Compact
+    OO["📈 LEARNING PATH"]
+    OO --> OO1["🔍 Explore"]
+    OO --> OO2["📖 Read"]
+    OO --> OO3["✏️ Modify"]
+    OO --> OO4["➕ Add"]
+    OO --> OO5["🧪 Test"]
+    OO --> OO6["🏗️ Refactor"]
+    OO --> OO7["🚀 Deploy"]
+
+    %% Main connections
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+
+    %% Data flow connections
+    JJ1 --> JJ2 --> JJ3 --> JJ4 --> JJ5 --> JJ6
+    JJ6 --> JJ7 --> JJ8
+
+    %% Styling with better colors and contrast
+    style A fill:#FF6B6B,stroke:#FF6B6B,color:#FFFFFF,stroke-width:3px
+    style I fill:#4ECDC4,stroke:#4ECDC4,color:#FFFFFF,stroke-width:2px
+    style JJ fill:#45B7D1,stroke:#45B7D1,color:#FFFFFF,stroke-width:2px
+    style KK fill:#96CEB4,stroke:#96CEB4,color:#FFFFFF,stroke-width:2px
+    style LL fill:#FFEAA7,stroke:#FFEAA7,color:#000000,stroke-width:2px
+    style MM fill:#DDA0DD,stroke:#DDA0DD,color:#FFFFFF,stroke-width:2px
+    style OO fill:#F7DC6F,stroke:#F7DC6F,color:#000000,stroke-width:2px
+
+    %% Feature styling
+    style M fill:#FFB6C1,stroke:#FFB6C1,color:#000000
+    style N fill:#FFB6C1,stroke:#FFB6C1,color:#000000
+    style O fill:#FFB6C1,stroke:#FFB6C1,color:#000000
+
+    %% Database styling
+    style Q fill:#87CEEB,stroke:#87CEEB,color:#000000
+
+    %% Templates styling
+    style Y fill:#DDA0DD,stroke:#DDA0DD,color:#FFFFFF
+
+    %% Static styling
+    style DD fill:#98FB98,stroke:#98FB98,color:#000000
+
+    %% Testing styling
+    style FF fill:#F0E68C,stroke:#F0E68C,color:#000000

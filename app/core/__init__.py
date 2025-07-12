@@ -10,6 +10,9 @@ from app.interfaces.controllers.cli import register_commands
 from .config import Config
 from .extensions import db, migrate
 
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def create_app(config_class=Config):
     """Application factory pattern"""
