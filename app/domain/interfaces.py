@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from .entities import Product, ProjectStats, TeamMember, User
+from .entities import Product, ProjectStats, TeamMember, User, Category
 
 
 class UserRepository(ABC):
@@ -45,4 +45,33 @@ class TeamRepository(ABC):
     @abstractmethod
     def get_project_stats(self) -> ProjectStats:
         """Get project statistics"""
+        pass
+
+
+class CategoryRepository(ABC):
+    """Category repository interface"""
+
+    @abstractmethod
+    def get_all_categories(self) -> List[Category]:
+        """Get all categories"""
+        pass
+
+    @abstractmethod
+    def get_category_by_id(self, category_id: int) -> Optional[Category]:
+        """Get category by ID"""
+        pass
+
+    @abstractmethod
+    def create_category(self, name: str, description: Optional[str] = None) -> Category:
+        """Create a new category"""
+        pass
+
+    @abstractmethod
+    def update_category(self, category_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Category]:
+        """Update an existing category"""
+        pass
+
+    @abstractmethod
+    def delete_category(self, category_id: int) -> bool:
+        """Delete a category by ID"""
         pass

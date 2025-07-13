@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block content %} <h1>{% if category %}Редактировать категорию{% else %}Создать категорию{% endif %}</h1>
+<form method="post">
+  <div class="mb-3">
+    <label for="name" class="form-label">Название</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{ category.name if category else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Описание</label>
+    <textarea class="form-control" id="description" name="description">{{ category.description if category else '' }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success">{% if category %}Сохранить{% else %}Создать{% endif %}</button>
+  <a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary">Назад</a>
+</form> {% endblock %}

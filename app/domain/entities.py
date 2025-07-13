@@ -44,3 +44,12 @@ class ProjectStats:
     start_date: str
     version: str
     features: List[str]
+
+
+@dataclass
+class Category:
+    """Category domain entity"""
+
+    id: Optional[int]
+    name: str
+    description: Optional[str] = None

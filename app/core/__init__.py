@@ -1,11 +1,10 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 
-from app.features.about.routes import about_bp  # Импортируем blueprint для страницы 'О нас'
-from app.features.home.routes import home_bp    # Импортируем blueprint для главной страницы
-from app.features.products.routes import products_bp  # Импортируем blueprint для продуктов
+from app.blueprints import register_blueprints
 from app.interfaces.controllers.cli import register_commands  # Импортируем функцию для регистрации CLI-команд
+from app.shared.swagger import init_swagger  # Импортируем функцию для инициализации Swagger
 
 from .config import Config  # Импортируем класс конфигурации
 from .extensions import db, migrate  # Импортируем расширения для работы с БД и миграциями
@@ -33,12 +32,15 @@ def create_app(config_class=Config):
     db.init_app(app)  # Подключаем SQLAlchemy к приложению
     migrate.init_app(app, db)  # Подключаем Alembic (Flask-Migrate) к приложению и БД
 
+    # Инициализируем Swagger документацию
+    init_swagger(app)
+
     # Регистрируем blueprints (модули с роутами)
-    app.register_blueprint(home_bp)      # Главная страница
-    app.register_blueprint(about_bp)     # Страница 'О нас'
-    app.register_blueprint(products_bp)  # Страница продуктов
+    register_blueprints(app)
 
     # Регистрируем кастомные CLI-команды
     register_commands(app)
+
+
 
     return app  # Возвращаем готовое Flask-приложение

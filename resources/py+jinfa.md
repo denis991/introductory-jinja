@@ -320,11 +320,24 @@ Mermaid Preview: Open Preview
 --------------------
 
 ## 4. **Добавь новую сущность и CRUD для неё**
-- Придумай новую сущность (например, Category).
-- Добавь модель в `models.py`.
-- Добавь репозиторий для работы с этой сущностью.
-- Добавь сервисы и роуты для CRUD (создание, чтение, обновление, удаление).
++ Придумай новую сущность (например, Category).
++ Добавь модель в `models.py`.
++ Добавь репозиторий для работы с этой сущностью.
++ Добавь сервисы и роуты для CRUD (создание, чтение, обновление, удаление).
++ Создаём сервисы для Category CRUD: получить все, получить по id, создать, обновить, удалить.
++ CRUD: GET /categories, GET /categories/<id>, POST /categories, PUT/PATCH /categories/<id>, DELETE /categories/<id>
 - Добавь шаблоны для отображения и форм.
+  - Создать шаблоны для категорий
+  - Добавить HTML-роуты (GET/POST) для работы с этими шаблонами:
+  - Создать шаблоны в templates/categories/:
+  - Интегрировать ссылки на категории в меню/на главной (если нужно).
+
+
+
+
+- **Добавить шаблоны для отображения и форм** (если потребуется — следующий шаг)
+
+#### 3. (Далее — шаблоны и интеграция с UI)
 
 ---
 
@@ -414,3 +427,63 @@ Mermaid Preview: Open Preview
 - Получишь реальный опыт, который пригодится в любом Python/Flask-проекте
 
 Если хочешь, могу расписать подробные примеры кода для любого шага — просто скажи!
+
+---
+
+### 1. **Error: No such option: -1**
+- Это связано с тем, что Flask-Migrate/Alembic ожидает ключевое слово `prev` вместо `-1` для отката на одну миграцию назад.
+- **Используй:**
+  ```
+  flask db downgrade prev
+  ```
+
+---
+
+### 2. **Error: Failed to find Flask application or factory in module 'app'. Use 'app:name' to specify one.**
+- Flask не может найти приложение, потому что переменная окружения `FLASK_APP` указывает не на тот модуль или не на фабрику.
+- В твоём проекте фабрика приложения находится в `app/core/__init__.py` и называется `create_app`.
+- Нужно явно указать путь к фабрике:
+  ```
+  FLASK_APP=app.core:create_app
+  ```
+
+---
+
+### 3. **Error: No such command 'db'.**
+- Это значит, что Flask-Migrate не инициализирован или не установлен, либо не импортирован `Migrate` в фабрике приложения.
+- Убедись, что в `app/core/__init__.py` есть строки:
+  ```python
+  from flask_migrate import Migrate
+  migrate = Migrate()
+  migrate.init_app(app, db)
+  ```
+- И что Flask-Migrate есть в `requirements.txt` и установлен.
+
+---
+
+## **Правильные команды для Makefile**
+
+```makefile
+migrate: ## Применить миграции Alembic/Flask-Migrate (локально)
+	@FLASK_APP=app.core:create_app .venv/bin/flask db upgrade
+
+migrate-downgrade: ## Откатить миграцию Alembic/Flask-Migrate (локально)
+	@FLASK_APP=app.core:create_app .venv/bin/flask db downgrade prev
+
+migrate-docker: ## Применить миграции внутри Docker-контейнера
+	@docker-compose exec web flask db upgrade
+
+migrate-downgrade-docker: ## Откатить миграцию внутри Docker-контейнера
+	@docker-compose exec web flask db downgrade prev
+```
+
+---
+
+## **Что делать:**
+1. Проверь, что Flask-Migrate установлен и инициализирован.
+2. Проверь, что переменная `FLASK_APP` указывает на `app.core:create_app`.
+3. Используй `prev` вместо `-1` для отката миграции.
+
+---
+
+**Если после этого останутся ошибки — покажи их, и я помогу разобраться!**

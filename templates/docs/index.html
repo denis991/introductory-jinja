@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='docs.css') }}"> {% endblock %} {% block content %} <div class="docs-container">
+  <div class="docs-header">
+    <h1>📚 API Документация</h1>
+    <p>Полная документация для работы с API вашего приложения</p>
+  </div>
+  <div class="docs-grid">
+    <div class="docs-card">
+      <h3>🔍 Swagger UI</h3>
+      <p>Интерактивная документация API с возможностью тестирования эндпоинтов прямо в браузере</p>
+      <a href="/swagger" class="docs-btn swagger-btn">Открыть Swagger</a>
+    </div>
+    <div class="docs-card">
+      <h3>❓ Помощь</h3>
+      <p>Руководство по использованию API, примеры запросов и ответов</p>
+      <a href="/docs/help" class="docs-btn help-btn">Справочник</a>
+    </div>
+    <div class="docs-card">
+      <h3>📊 Статистика API</h3>
+      <p>Информация о количестве записей в базе данных и состоянии API</p>
+      <a href="/api/stats" class="docs-btn">Статистика</a>
+    </div>
+    <div class="docs-card">
+      <h3>🏥 Проверка здоровья</h3>
+      <p>Проверка состояния API и доступности сервисов</p>
+      <a href="/api/health" class="docs-btn">Health Check</a>
+    </div>
+  </div>
+</div> {% endblock %}

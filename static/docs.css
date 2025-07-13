@@ -1,0 +1,49 @@
+/* Стили для главной страницы документации */
+@import url('docs-common.css');
+
+/* Специфичные стили для главной страницы документации */
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.docs-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.docs-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.docs-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #2d3748;
+}
+
+.docs-card p {
+  color: #718096;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Адаптивность для карточек */
+@media (max-width: 768px) {
+  .docs-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .docs-card {
+    padding: 1.5rem;
+  }
+}
