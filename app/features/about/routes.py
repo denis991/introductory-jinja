@@ -1,3 +1,5 @@
+# Здесь определяются маршруты (routes) для страницы 'О нас'.
+# Каждый маршрут — это функция, которая обрабатывает HTTP-запросы и возвращает ответ (HTML-страницу или данные).
 from flask import Blueprint, render_template
 
 from app.features.about.services import AboutService

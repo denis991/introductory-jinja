@@ -1,3 +1,5 @@
+# Здесь реализуется бизнес-логика для главной страницы.
+# Сервисы содержат функции, которые обрабатывают данные и реализуют правила предметной области для этой фичи.
 from typing import Any, Dict
 
 from app.domain.interfaces import ProductRepository, UserRepository

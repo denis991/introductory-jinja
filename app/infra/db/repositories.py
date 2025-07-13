@@ -1,12 +1,15 @@
+# Здесь реализуются репозитории — классы для доступа к данным в базе данных (CRUD-операции).
+# Репозитории инкапсулируют работу с ORM и позволяют отделить бизнес-логику от деталей хранения данных.
 from datetime import datetime
 from typing import List, Optional
 
-from app.domain.entities import Product, ProjectStats, TeamMember, User
+from app.domain.entities import Product, ProjectStats, TeamMember, User, Category
 from app.domain.interfaces import (ProductRepository, TeamRepository,
-                                  UserRepository)
+                                  UserRepository, CategoryRepository)
 
 from .models import Product as ProductModel
 from .models import User as UserModel
+from .models import Category as CategoryModel
 
 
 class SQLAlchemyUserRepository(UserRepository):
@@ -46,6 +49,46 @@ class SQLAlchemyProductRepository(ProductRepository):
         """Get product by ID"""
         product = ProductModel.query.get(product_id)
         return product.to_domain() if product else None
+
+
+class SQLAlchemyCategoryRepository(CategoryRepository):
+    """SQLAlchemy implementation of CategoryRepository"""
+
+    def get_all_categories(self) -> List[Category]:
+        categories = CategoryModel.query.all()
+        return [category.to_domain() for category in categories]
+
+    def get_category_by_id(self, category_id: int) -> Optional[Category]:
+        category = CategoryModel.query.get(category_id)
+        return category.to_domain() if category else None
+
+    def create_category(self, name: str, description: Optional[str] = None) -> Category:
+        category = CategoryModel(name=name, description=description)
+        from app.core.extensions import db
+        db.session.add(category)
+        db.session.commit()
+        return category.to_domain()
+
+    def update_category(self, category_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Category]:
+        from app.core.extensions import db
+        category = CategoryModel.query.get(category_id)
+        if not category:
+            return None
+        if name is not None:
+            category.name = name
+        if description is not None:
+            category.description = description
+        db.session.commit()
+        return category.to_domain()
+
+    def delete_category(self, category_id: int) -> bool:
+        from app.core.extensions import db
+        category = CategoryModel.query.get(category_id)
+        if not category:
+            return False
+        db.session.delete(category)
+        db.session.commit()
+        return True
 
 
 class MockTeamRepository(TeamRepository):

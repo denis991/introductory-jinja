@@ -1,0 +1,64 @@
+/* Стили для страницы помощи */
+@import url('docs-common.css');
+
+/* Специфичные стили для страницы помощи */
+.help-section {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.help-section h2 {
+  color: #2d3748;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.help-section h3 {
+  color: #4a5568;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.code-block {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-family: 'Courier New', monospace;
+  overflow-x: auto;
+}
+
+.endpoint {
+  background: #edf2f7;
+  border-left: 4px solid #4299e1;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.method {
+  font-weight: bold;
+  color: #2b6cb0;
+}
+
+.url {
+  color: #2d3748;
+  font-family: 'Courier New', monospace;
+}
+
+/* Адаптивность для страницы помощи */
+@media (max-width: 768px) {
+  .help-section {
+    padding: 1.5rem;
+  }
+
+  .code-block {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+}

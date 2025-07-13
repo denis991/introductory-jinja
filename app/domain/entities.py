@@ -1,3 +1,5 @@
+# Здесь определяются бизнес-сущности (например, Product, User и т.д.)
+# Эти классы описывают основные объекты предметной области, не зависящие от инфраструктуры и фреймворков.
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
@@ -42,3 +44,12 @@ class ProjectStats:
     start_date: str
     version: str
     features: List[str]
+
+
+@dataclass
+class Category:
+    """Category domain entity"""
+
+    id: Optional[int]
+    name: str
+    description: Optional[str] = None

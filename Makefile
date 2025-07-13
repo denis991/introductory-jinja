@@ -130,11 +130,80 @@ docker-compose-up: ## Запустить с Docker Compose
 docker-compose-down: ## Остановить Docker Compose
 	@docker-compose down
 
+# ----------------------------------------------------------
+# Для локальной разработки:
+# make migrate-init — инициализация
+# make migrate-create — создать миграцию
+# make migrate — применить
+# make migrate-downgrade — откатить
+# Порядок действий:
+# Сначала выполни make migrate-init-docker
+# Потом make migrate-create-docker
+# Затем make migrate-docker
+
 init-db: ## Инициализировать базу данных
 	@FLASK_APP=run.py .venv/bin/flask init-db
 
-seed-db: ## Заполнить базу данных тестовыми данными
-	@FLASK_APP=run.py .venv/bin/flask seed-db
+seed-db: ## Заполнить базу данных тестовыми данными (локально)
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask seed-db
+
+seed-db-docker: ## Заполнить базу данных тестовыми данными в Docker
+	@docker-compose exec web flask seed-db
+
+migrate-init: ## Инициализировать Flask-Migrate (создать папку migrations)
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db init
+
+migrate-create: ## Создать новую миграцию
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db migrate -m "Auto migration"
+
+migrate: ## Применить миграции Alembic/Flask-Migrate (локально)
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db upgrade
+
+##################Docker
+migrate-downgrade: ## Откатить миграцию Alembic/Flask-Migrate (локально)
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db downgrade prev
+
+migrate-docker: ## Применить миграции внутри Docker-контейнера
+	@docker-compose exec web flask db upgrade
+
+migrate-downgrade-docker: ## Откатить миграцию внутри Docker-контейнера
+	@docker-compose exec web flask db downgrade prev
+
+migrate-init-docker: ## Инициализировать Flask-Migrate в Docker
+	@docker-compose exec web flask db init
+
+migrate-create-docker: ## Создать новую миграцию в Docker
+	@docker-compose exec web flask db migrate -m "Auto migration"
+
+migrate-status: ## Показать статус миграций
+	@docker-compose exec web flask db current
+
+migrate-history: ## Показать историю миграций
+	@docker-compose exec web flask db history
+
+migrate-downgrade-all: ## Откатить все миграции до начала (base)
+	@docker-compose exec web flask db downgrade base
+
+migrate-clean: ## Полностью очистить базу данных (удалить все данные)
+	@docker-compose exec web flask drop-db
+
+migrate-reset: ## Полный сброс: очистить БД, применить миграции, накатить сиды
+	@echo "🔄 Полный сброс базы данных..."
+	@docker-compose exec web flask drop-db
+	@docker-compose exec web flask db migrate -m "Initial migration" || true
+	@docker-compose exec web flask db upgrade
+	@docker-compose exec web flask seed-db
+	@echo "✅ База данных сброшена и заполнена тестовыми данными"
+
+migrate-reset-local: ## Полный сброс локально (SQLite)
+	@echo "🔄 Полный сброс локальной базы данных..."
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask drop-db
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db migrate -m "Initial migration" || true
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db upgrade
+	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask seed-db
+	@echo "✅ Локальная база данных сброшена и заполнена тестовыми данными"
+
+# ----------------------------------------------------------
 
 kill-port: ## Убить процесс на порту $(DEFAULT_PORT)
 	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || echo "Порт $(DEFAULT_PORT) уже свободен"
@@ -201,3 +270,4 @@ lint-fix: format ## Исправить проблемы с кодом
 	@echo "🔧 Исправляем проблемы..."
 	@autopep8 --in-place --recursive --aggressive --aggressive .
 	@echo "✅ Проблемы исправлены"
+# ---------------------------

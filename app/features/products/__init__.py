@@ -1,1 +1,1 @@
-# Products feature
+# Модуль товаров

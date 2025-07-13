@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='help.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="help-container">
+  <a href="/docs/" class="back-btn">← Назад к документации</a>
+
+  <div class="help-header">
+    <h1>❓ Справочник по API</h1>
+    <p>Подробное руководство по использованию API</p>
+  </div>
+
+  <div class="help-section">
+    <h2>🚀 Быстрый старт</h2>
+    <p>API предоставляет RESTful интерфейс для работы с данными приложения. Все эндпоинты возвращают данные в формате JSON.</p>
+
+    <h3>Базовый URL</h3>
+    <div class="code-block">http://localhost:5006/api</div>
+  </div>
+
+  <div class="help-section">
+    <h2>👥 Пользователи</h2>
+
+    <div class="endpoint">
+      <div class="method">GET</div>
+      <div class="url">/api/users/</div>
+      <p>Получить список всех пользователей</p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/users/</div>
+      <p>Создать нового пользователя</p>
+      <div class="code-block">
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "first_name": "John",
+  "last_name": "Doe"
+}
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">GET</div>
+      <div class="url">/api/users/{id}</div>
+      <p>Получить пользователя по ID</p>
+    </div>
+  </div>
+
+  <div class="help-section">
+    <h2>🏷️ Категории</h2>
+
+    <div class="endpoint">
+      <div class="method">GET</div>
+      <div class="url">/api/categories/</div>
+      <p>Получить список всех категорий</p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/categories/</div>
+      <p>Создать новую категорию</p>
+      <div class="code-block">
+{
+  "name": "Новая категория",
+  "description": "Описание категории"
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="help-section">
+    <h2>📦 Товары</h2>
+
+    <div class="endpoint">
+      <div class="method">GET</div>
+      <div class="url">/api/products/</div>
+      <p>Получить список всех товаров</p>
+    </div>
+
+    <div class="endpoint">
+      <div class="method">POST</div>
+      <div class="url">/api/products/</div>
+      <p>Создать новый товар</p>
+      <div class="code-block">
+{
+  "name": "Новый товар",
+  "description": "Описание товара",
+  "price": 99.99,
+  "category_ids": [1, 2]
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="help-section">
+    <h2>📊 Коды ответов</h2>
+    <ul>
+      <li><strong>200</strong> - Успешный запрос</li>
+      <li><strong>201</strong> - Ресурс успешно создан</li>
+      <li><strong>400</strong> - Неверный запрос</li>
+      <li><strong>404</strong> - Ресурс не найден</li>
+      <li><strong>500</strong> - Внутренняя ошибка сервера</li>
+    </ul>
+  </div>
+
+  <div class="help-section">
+    <h2>🔧 Примеры использования</h2>
+
+    <h3>Получение всех пользователей</h3>
+    <div class="code-block">
+curl -X GET "http://localhost:5006/api/users/" \
+  -H "Content-Type: application/json"
+    </div>
+
+    <h3>Создание новой категории</h3>
+    <div class="code-block">
+curl -X POST "http://localhost:5006/api/categories/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Электроника",
+    "description": "Электронные устройства"
+  }'
+    </div>
+
+    <h3>Получение статистики</h3>
+    <div class="code-block">
+curl -X GET "http://localhost:5006/api/stats" \
+  -H "Content-Type: application/json"
+    </div>
+  </div>
+</div>
+{% endblock %}

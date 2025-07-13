@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='categories.css') }}"> {% endblock %} {% block content %} <div class="categories-container">
+  <div class="categories-header">
+    <h1>📂 Категории</h1>
+    <p>Управляйте категориями товаров в вашем магазине</p>
+    <a href="{{ url_for('categories.category_create_ui') }}" class="create-btn"> ➕ Создать категорию </a>
+  </div> {% if categories %} <div class="categories-grid"> {% for category in categories %} <div class="category-card">
+      <div class="category-id">{{ category.id }}</div>
+      <a href="{{ url_for('categories.category_detail_ui', category_id=category.id) }}" class="category-name"> {{ category.name }} </a>
+      <p class="category-description"> {{ category.description or 'Описание отсутствует' }} </p>
+      <div class="category-actions">
+        <a href="{{ url_for('categories.category_edit_ui', category_id=category.id) }}" class="btn-edit"> ✏️ Редактировать </a>
+        <a href="{{ url_for('categories.category_delete_ui', category_id=category.id) }}" class="btn-delete"> 🗑️ Удалить </a>
+      </div>
+    </div> {% endfor %} </div> {% else %} <div class="empty-state">
+    <h3>📭 Категории не найдены</h3>
+    <p>Создайте первую категорию, чтобы начать работу</p>
+    <a href="{{ url_for('categories.category_create_ui') }}" class="create-btn"> ➕ Создать категорию </a>
+  </div> {% endif %}
+</div> {% endblock %}
