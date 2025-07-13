@@ -1,3 +1,5 @@
+# Здесь определяются бизнес-сущности (например, Product, User и т.д.)
+# Эти классы описывают основные объекты предметной области, не зависящие от инфраструктуры и фреймворков.
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
