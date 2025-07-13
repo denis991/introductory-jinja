@@ -1,6 +1,44 @@
-{% extends 'base.html' %} {% block content %} <h1>Категория: {{ category.name }}</h1>
-<p><strong>ID:</strong> {{ category.id }}</p>
-<p><strong>Описание:</strong> {{ category.description }}</p>
-<a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary">Назад к списку</a>
-<a href="{{ url_for('categories.category_edit_ui', category_id=category.id) }}" class="btn btn-warning">Редактировать</a>
-<a href="{{ url_for('categories.category_delete_ui', category_id=category.id) }}" class="btn btn-danger">Удалить</a> {% endblock %}
+{% extends 'base.html' %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css', v='1.0') }}"> {% endblock %} {% block content %} <div class="form-container">
+  <div class="form-header">
+    <h1>📂 {{ category.name }}</h1>
+  </div>
+  <div class="form-card">
+    <div style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+        <div
+             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; margin-right: 1rem;">
+          {{ category.id }} </div>
+        <div>
+          <h2 style="margin: 0; color: #2d3748; font-size: 1.8rem;">ID: {{ category.id }}</h2>
+          <p style="margin: 0; color: #718096;">Уникальный идентификатор</p>
+        </div>
+      </div>
+      <div style="margin-bottom: 2rem;">
+        <h3 style="color: #4a5568; margin-bottom: 0.5rem;">📄 Описание</h3>
+        <p style="font-size: 1.1rem; line-height: 1.6; color: #2d3748; background: #f7fafc; padding: 1rem; border-radius: 10px; border-left: 4px solid #667eea;"> {{
+          category.description or 'Описание отсутствует' }} </p>
+      </div>
+      <div style="margin-bottom: 2rem;">
+        <h3 style="color: #4a5568; margin-bottom: 0.5rem;">📅 Информация</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div style="background: #f7fafc; padding: 1rem; border-radius: 10px; text-align: center;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📅</div>
+            <div style="font-weight: 600; color: #2d3748;">Создана</div>
+            <div style="color: #718096; font-size: 0.9rem;"> {{ category.created_at.strftime('%d.%m.%Y %H:%M') if category.created_at else 'Неизвестно' }} </div>
+          </div>
+          <div style="background: #f7fafc; padding: 1rem; border-radius: 10px; text-align: center;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔄</div>
+            <div style="font-weight: 600; color: #2d3748;">Обновлена</div>
+            <div style="color: #718096; font-size: 0.9rem;"> {{ category.updated_at.strftime('%d.%m.%Y %H:%M') if category.updated_at else 'Неизвестно' }} </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary"> ← Назад к списку </a>
+      <a href="{{ url_for('categories.category_edit_ui', category_id=category.id) }}" class="btn btn-success"> ✏️ Редактировать </a>
+      <a href="{{ url_for('categories.category_delete_ui', category_id=category.id) }}" class="btn btn-danger"> 🗑️ Удалить </a>
+    </div>
+  </div>
+</div> {% endblock %}

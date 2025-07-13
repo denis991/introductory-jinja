@@ -1,13 +1,60 @@
-{% extends 'base.html' %} {% block content %} <h1>{% if category %}Редактировать категорию{% else %}Создать категорию{% endif %}</h1>
-<form method="post">
-  <div class="mb-3">
-    <label for="name" class="form-label">Название</label>
-    <input type="text" class="form-control" id="name" name="name" value="{{ category.name if category else '' }}" required>
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css', v='1.0') }}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <div class="form-header">
+    <h1>
+      {% if category %}
+        ✏️ Редактировать категорию
+      {% else %}
+        ➕ Создать категорию
+      {% endif %}
+    </h1>
   </div>
-  <div class="mb-3">
-    <label for="description" class="form-label">Описание</label>
-    <textarea class="form-control" id="description" name="description">{{ category.description if category else '' }}</textarea>
+
+  <div class="form-card">
+    <form method="post">
+      <div class="form-group">
+        <label for="name" class="form-label">📝 Название категории</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          value="{{ category.name if category else '' }}"
+          placeholder="Введите название категории..."
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="form-label">📄 Описание</label>
+        <textarea
+          class="form-control"
+          id="description"
+          name="description"
+          placeholder="Введите описание категории..."
+        >{{ category.description if category else '' }}</textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">
+          {% if category %}
+            💾 Сохранить изменения
+          {% else %}
+            ➕ Создать категорию
+          {% endif %}
+        </button>
+
+        <a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary">
+          ← Назад к списку
+        </a>
+      </div>
+    </form>
   </div>
-  <button type="submit" class="btn btn-success">{% if category %}Сохранить{% else %}Создать{% endif %}</button>
-  <a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary">Назад</a>
-</form> {% endblock %}
+</div>
+{% endblock %}

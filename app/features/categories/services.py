@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from app.domain.entities import Category
 from app.domain.interfaces import CategoryRepository
 
@@ -10,6 +10,20 @@ category_repo: CategoryRepository = SQLAlchemyCategoryRepository()
 def get_all_categories() -> List[Category]:
     """Получить все категории"""
     return category_repo.get_all_categories()
+
+
+def get_categories_paginated(page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
+    """
+    Получить категории с пагинацией
+
+    Args:
+        page: Номер страницы (начиная с 1)
+        per_page: Количество элементов на странице
+
+    Returns:
+        Tuple[список_категорий, общее_количество, текущая_страница, всего_страниц]
+    """
+    return category_repo.get_categories_paginated(page, per_page)
 
 
 def get_category_by_id(category_id: int) -> Optional[Category]:

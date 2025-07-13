@@ -1,6 +1,38 @@
-{% extends 'base.html' %} {% block content %} <h1>Удалить категорию</h1>
-<p>Вы уверены, что хотите удалить категорию <strong>{{ category.name }}</strong>?</p>
-<form method="post">
-  <button type="submit" class="btn btn-danger">Удалить</button>
-  <a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary">Отмена</a>
-</form> {% endblock %}
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css', v='1.0') }}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <div class="form-header">
+    <h1>🗑️ Удалить категорию</h1>
+  </div>
+
+  <div class="form-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+      <h2 style="color: #e53e3e; margin-bottom: 1rem;">Внимание!</h2>
+      <p style="font-size: 1.2rem; color: #4a5568; line-height: 1.6;">
+        Вы собираетесь удалить категорию <strong style="color: #2d3748;">{{ category.name }}</strong>
+      </p>
+      <p style="color: #718096; margin-top: 1rem;">
+        Это действие нельзя будет отменить. Все товары в этой категории останутся без категории.
+      </p>
+    </div>
+
+    <form method="post">
+      <div class="form-actions" style="justify-content: center;">
+        <button type="submit" class="btn btn-danger">
+          🗑️ Да, удалить категорию
+        </button>
+
+        <a href="{{ url_for('categories.categories_list_ui') }}" class="btn btn-secondary">
+          ❌ Отмена
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

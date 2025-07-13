@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='categories.css') }}"> {% endblock %} {% block content %} <div class="categories-container">
+<link rel="stylesheet" href="{{ url_for('static', filename='categories.css', v='1.1') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='pagination.css', v='1.0') }}"> {% endblock %} {% block content %} <div class="categories-container">
   <div class="categories-header">
     <h1>📂 Категории</h1>
     <p>Управляйте категориями товаров в вашем магазине</p>
@@ -12,9 +13,51 @@
         <a href="{{ url_for('categories.category_edit_ui', category_id=category.id) }}" class="btn-edit"> ✏️ Редактировать </a>
         <a href="{{ url_for('categories.category_delete_ui', category_id=category.id) }}" class="btn-delete"> 🗑️ Удалить </a>
       </div>
-    </div> {% endfor %} </div> {% else %} <div class="empty-state">
+    </div> {% endfor %} </div>
+  <!-- Пагинация и селектор количества -->
+  <div class="pagination-container">
+    <div class="pagination-info">
+      <span>Показано {{ categories|length }} из {{ total_count }} категорий</span>
+      <span class="total-count">Всего: {{ total_count }}</span>
+    </div>
+    <div class="pagination-controls">
+      <!-- Селектор количества элементов на страницу -->
+      <div class="per-page-selector">
+        <label for="per-page">На странице:</label>
+        <select id="per-page" class="per-page-select" onchange="changePerPage(this.value)">
+          <option value="6" {% if per_page==6 %}selected{% endif %}>6</option>
+          <option value="12" {% if per_page==12 %}selected{% endif %}>12</option>
+          <option value="24" {% if per_page==24 %}selected{% endif %}>24</option>
+          <option value="-1" {% if per_page==-1 %}selected{% endif %}>Все</option>
+        </select>
+      </div>
+      <!-- Пагинация --> {% if total_pages > 1 %} <div class="pagination">
+        <!-- Кнопка "Предыдущая" --> {% if current_page > 1 %} <a href="{{ url_for('categories.categories_list_ui', page=current_page-1, per_page=per_page) }}"
+          class="pagination-item page-link"> ← </a> {% else %} <span class="pagination-item page-link disabled">←</span> {% endif %} <!-- Номера страниц --> {% set start_page =
+        [1, current_page - 2] | max %} {% set end_page = [total_pages, current_page + 2] | min %} {% if start_page > 1 %} <a
+          href="{{ url_for('categories.categories_list_ui', page=1, per_page=per_page) }}"
+          class="pagination-item page-link">1</a> {% if start_page > 2 %} <span class="pagination-item page-link disabled">...</span> {% endif %} {% endif %} {% for page_num in
+        range(start_page, end_page + 1) %} {% if page_num == current_page %} <span class="pagination-item page-link active">{{ page_num }}</span> {% else %} <a
+          href="{{ url_for('categories.categories_list_ui', page=page_num, per_page=per_page) }}"
+          class="pagination-item page-link">{{ page_num }}</a> {% endif %} {% endfor %} {% if end_page < total_pages %}
+          {% if end_page < total_pages - 1 %}
+          <span class="pagination-item page-link disabled">...</span> {% endif %} <a href="{{ url_for('categories.categories_list_ui', page=total_pages, per_page=per_page) }}"
+            class="pagination-item page-link">{{ total_pages }}</a> {% endif %} <!-- Кнопка "Следующая" --> {% if current_page < total_pages %}
+            <a href="{{ url_for('categories.categories_list_ui', page=current_page+1, per_page=per_page) }}"
+            class="pagination-item page-link"> → </a> {% else %} <span class="pagination-item page-link disabled">→</span> {% endif %}
+      </div> {% endif %}
+    </div>
+  </div> {% else %} <div class="empty-state">
     <h3>📭 Категории не найдены</h3>
     <p>Создайте первую категорию, чтобы начать работу</p>
     <a href="{{ url_for('categories.category_create_ui') }}" class="create-btn"> ➕ Создать категорию </a>
   </div> {% endif %}
-</div> {% endblock %}
+</div>
+<script>
+  function changePerPage(value) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('per_page', value);
+    urlParams.set('page', '1'); // Сбрасываем на первую страницу при изменении количества
+    window.location.search = urlParams.toString();
+  }
+</script> {% endblock %}

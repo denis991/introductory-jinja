@@ -1,7 +1,7 @@
 # Здесь определяются интерфейсы (абстракции) для репозиториев и сервисов.
 # Это контракты, которые описывают, какие методы должны быть реализованы для работы с данными или бизнес-логикой.
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from .entities import Product, ProjectStats, TeamMember, User, Category
 
@@ -74,4 +74,18 @@ class CategoryRepository(ABC):
     @abstractmethod
     def delete_category(self, category_id: int) -> bool:
         """Delete a category by ID"""
+        pass
+
+    @abstractmethod
+    def get_categories_paginated(self, page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
+        """
+        Get categories with pagination
+
+        Args:
+            page: Page number (starting from 1)
+            per_page: Number of items per page
+
+        Returns:
+            Tuple[list_of_categories, total_count, current_page, total_pages]
+        """
         pass

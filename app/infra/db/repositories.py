@@ -1,7 +1,8 @@
 # Здесь реализуются репозитории — классы для доступа к данным в базе данных (CRUD-операции).
 # Репозитории инкапсулируют работу с ORM и позволяют отделить бизнес-логику от деталей хранения данных.
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Tuple
+import math
 
 from app.domain.entities import Product, ProjectStats, TeamMember, User, Category
 from app.domain.interfaces import (ProductRepository, TeamRepository,
@@ -89,6 +90,37 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
         db.session.delete(category)
         db.session.commit()
         return True
+
+    def get_categories_paginated(self, page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
+        """
+        Get categories with pagination
+
+        Args:
+            page: Page number (starting from 1)
+            per_page: Number of items per page
+
+        Returns:
+            Tuple[list_of_categories, total_count, current_page, total_pages]
+        """
+        from app.core.extensions import db
+
+        # Get total count
+        total_count = CategoryModel.query.count()
+
+        # Calculate total pages
+        total_pages = math.ceil(total_count / per_page) if total_count > 0 else 1
+
+        # Ensure page is within valid range
+        page = max(1, min(page, total_pages))
+
+        # Get paginated results
+        offset = (page - 1) * per_page
+        categories = CategoryModel.query.offset(offset).limit(per_page).all()
+
+        # Convert to domain entities
+        category_list = [category.to_domain() for category in categories]
+
+        return category_list, total_count, page, total_pages
 
 
 class MockTeamRepository(TeamRepository):
