@@ -1,4 +1,4 @@
-/* Стили для пагинации и селектора количества элементов */
+/* Оптимизированные стили для пагинации и селектора количества элементов */
 
 .pagination-container {
   display: flex;
@@ -7,7 +7,6 @@
   margin-top: 3rem;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -56,7 +55,7 @@
   font-weight: 600;
   color: #2d3748;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -87,24 +86,7 @@
   border-radius: 10px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-}
-
-.pagination-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.pagination-item:hover::before {
-  left: 100%;
+  transition: all 0.3s ease;
 }
 
 .pagination-item.page-link {
@@ -147,15 +129,11 @@
   box-shadow: none;
 }
 
-.pagination-item.page-link.disabled::before {
-  display: none;
-}
-
-/* Анимации */
+/* Упрощенная анимация */
 @keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -164,7 +142,7 @@
 }
 
 .pagination-container {
-  animation: slideInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: slideInUp 0.4s ease forwards;
 }
 
 /* Адаптивность */
@@ -202,36 +180,12 @@
   }
 }
 
-/* Дополнительные эффекты */
-.pagination-item.page-link:active {
-  animation: pulse 0.3s ease;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0.95);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Эффект для селектора при изменении */
-.per-page-select:focus {
-  animation: selectFocus 0.3s ease;
-}
-
-@keyframes selectFocus {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
+/* Оптимизация для производительности */
+@media (prefers-reduced-motion: reduce) {
+  .pagination-container,
+  .pagination-item,
+  .per-page-select {
+    animation: none;
+    transition: none;
   }
 }

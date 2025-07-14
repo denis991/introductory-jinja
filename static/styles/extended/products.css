@@ -1,0 +1,165 @@
+/* === Расширенные интерактивные стили для /products (только в расширенном режиме) === */
+
+.products-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.product-item {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.10);
+  border: 1px solid rgba(102, 126, 234, 0.10);
+  padding: 1.5rem;
+  transition: box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  animation: fadeInUp 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.product-item:hover {
+  box-shadow: 0 16px 40px rgba(102, 126, 234, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-6px) scale(1.025);
+  background: rgba(245, 247, 250, 0.98);
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  transition: color 0.3s;
+}
+
+.product-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 0.3s;
+}
+
+.product-item:hover .product-header h3 {
+  color: #667eea;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.18rem;
+}
+
+.star {
+  color: #ddd;
+  font-size: 1.2rem;
+  transition: color 0.3s, transform 0.2s;
+  cursor: pointer;
+}
+
+.star.filled {
+  color: #f39c12;
+  text-shadow: 0 2px 8px rgba(243, 156, 18, 0.12);
+}
+
+.product-item:hover .star.filled {
+  color: #ffb300;
+  transform: scale(1.15) rotate(-6deg);
+}
+
+.rating-text {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  margin-left: 0.5rem;
+  font-weight: 500;
+}
+
+.product-details {
+  margin-bottom: 1rem;
+  transition: color 0.3s;
+}
+
+.price {
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: #27ae60;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s;
+}
+
+.product-item:hover .price {
+  color: #764ba2;
+}
+
+.category {
+  color: #667eea;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stock .badge-success {
+  background: linear-gradient(90deg, #27ae60 60%, #a8e063 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.10);
+}
+
+.stock .badge-error {
+  background: linear-gradient(90deg, #e74c3c 60%, #ffb199 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.10);
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.btn {
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.18);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #95a5a6 0%, #c3cfe2 100%);
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #7f8c8d 0%, #c3cfe2 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.13);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Конец интерактивных стилей для products --- */

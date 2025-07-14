@@ -13,6 +13,8 @@
   <!-- Theme colors for mobile browsers -->
   <meta name="theme-color" content="#ffffff">
   <meta name="msapplication-TileColor" content="#ffffff">
+  <!-- Мобильный header только для экранов < 1440px -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/mobile-header.css') }}" media="(max-width: 1439px)">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {% block head %}{% endblock %} <!-- Оптимизация производительности -->
   <script src="{{ url_for('static', filename='optimization.js') }}" defer></script>
   <!-- Переключатель стилей -->

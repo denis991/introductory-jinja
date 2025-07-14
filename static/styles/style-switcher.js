@@ -18,18 +18,17 @@ class StyleSwitcher {
     }
 
     createSwitcher() {
-        // Ищем навигацию
-        const navbar = document.querySelector('.navbar-nav');
-        // navbar-nav <-> nav-menu
-        if (!navbar) return;
+        // Ищем контейнер футера
+        const footerContainer = document.querySelector('.footer .container');
+        if (!footerContainer) return;
 
         // Создаем элемент переключателя
-        const switcherContainer = document.createElement('li');
-        switcherContainer.className = 'style-switcher-container';
+        const switcherContainer = document.createElement('div');
+        switcherContainer.className = 'style-switcher-footer';
         switcherContainer.innerHTML = `
-            <div class="style-switcher">
+            <div class="style-switcher compact">
                 <label class="switcher-label">
-                    <span class="switcher-text">🎨 Красивые стили</span>
+                    <span class="switcher-text">🎨 Styles</span>
                     <div class="switcher-toggle">
                         <input type="checkbox" id="style-switcher" ${this.isExtendedMode ? 'checked' : ''}>
                         <span class="switcher-slider"></span>
@@ -38,8 +37,8 @@ class StyleSwitcher {
             </div>
         `;
 
-        // Добавляем в навигацию
-        navbar.appendChild(switcherContainer);
+        // Добавляем в футер
+        footerContainer.appendChild(switcherContainer);
 
         // Добавляем стили для переключателя
         this.addSwitcherStyles();
@@ -48,45 +47,42 @@ class StyleSwitcher {
     addSwitcherStyles() {
         const style = document.createElement('style');
         style.textContent = `
-            .style-switcher-container {
+            .style-switcher-footer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 0.5rem;
+            }
+            .style-switcher.compact {
                 display: flex;
                 align-items: center;
-                margin-left: auto;
+                gap: 0.3rem;
+                font-size: 0.8rem;
             }
-
-            .style-switcher {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-
             .switcher-label {
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 0.3rem;
                 cursor: pointer;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
                 font-weight: 500;
                 color: #4a5568;
                 transition: all 0.3s ease;
             }
-
             .switcher-text {
                 white-space: nowrap;
+                font-size: 0.8rem;
             }
-
             .switcher-toggle {
                 position: relative;
-                width: 50px;
-                height: 24px;
+                width: 32px;
+                height: 16px;
             }
-
             .switcher-toggle input {
                 opacity: 0;
                 width: 0;
                 height: 0;
             }
-
             .switcher-slider {
                 position: absolute;
                 cursor: pointer;
@@ -96,51 +92,36 @@ class StyleSwitcher {
                 bottom: 0;
                 background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
                 transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                border-radius: 24px;
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                border-radius: 16px;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
             }
-
             .switcher-slider:before {
                 position: absolute;
                 content: "";
-                height: 18px;
-                width: 18px;
-                left: 3px;
-                bottom: 3px;
+                height: 12px;
+                width: 12px;
+                left: 2px;
+                bottom: 2px;
                 background: white;
                 transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 border-radius: 50%;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
             }
-
             .switcher-toggle input:checked + .switcher-slider {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.13);
             }
-
             .switcher-toggle input:checked + .switcher-slider:before {
-                transform: translateX(26px);
+                transform: translateX(16px);
             }
-
             .switcher-label:hover .switcher-slider {
-                transform: scale(1.05);
+                transform: scale(1.04);
             }
-
-            /* Анимация при переключении */
-            .style-switching {
-                transition: all 0.3s ease;
-            }
-
-            /* Адаптивность */
             @media (max-width: 768px) {
-                .style-switcher-container {
-                    margin-left: 0;
-                    margin-top: 1rem;
-                }
-
-                .switcher-text {
-                    font-size: 0.8rem;
-                }
+                .style-switcher-footer { margin-top: 0.3rem; }
+                .switcher-label, .switcher-text { font-size: 0.7rem; }
+                .switcher-toggle { width: 26px; height: 13px; }
+                .switcher-slider:before { height: 9px; width: 9px; left: 2px; bottom: 2px; }
             }
         `;
         document.head.appendChild(style);
@@ -277,4 +258,25 @@ class StyleSwitcher {
 // Инициализируем переключатель при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     new StyleSwitcher();
+
+    // Мобильное бургер-меню для header/nav
+    const burger = document.querySelector('.burger');
+    const navMenu = document.querySelector('.nav-menu');
+    if (burger && navMenu) {
+        burger.addEventListener('click', function() {
+            const isOpen = navMenu.classList.toggle('open');
+            burger.classList.toggle('active', isOpen);
+            burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        // Закрытие меню по клику вне nav-menu (на мобильных)
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 1024 && navMenu.classList.contains('open')) {
+                if (!navMenu.contains(e.target) && !burger.contains(e.target)) {
+                    navMenu.classList.remove('open');
+                    burger.classList.remove('active');
+                    burger.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+    }
 });
