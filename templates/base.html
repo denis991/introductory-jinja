@@ -13,7 +13,10 @@
   <!-- Theme colors for mobile browsers -->
   <meta name="theme-color" content="#ffffff">
   <meta name="msapplication-TileColor" content="#ffffff">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {% block head %}{% endblock %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {% block head %}{% endblock %} <!-- Оптимизация производительности -->
+  <script src="{{ url_for('static', filename='optimization.js') }}" defer></script>
+  <!-- Переключатель стилей -->
+  <script src="{{ url_for('static', filename='styles/style-switcher.js') }}" defer></script>
 </head>
 <body> {% include "partials/header.html" %} <main class="container"> {% block content %}{% endblock %} </main>
   <footer class="footer">

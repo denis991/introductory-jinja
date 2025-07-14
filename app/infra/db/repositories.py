@@ -53,47 +53,69 @@ class SQLAlchemyProductRepository(ProductRepository):
 
 
 class SQLAlchemyCategoryRepository(CategoryRepository):
-    """SQLAlchemy implementation of CategoryRepository"""
+    """SQLAlchemy implementation of CategoryRepository with performance optimizations"""
 
     def get_all_categories(self) -> List[Category]:
+        """Get all categories with optimized query"""
+        # Получаем полные объекты модели для совместимости
         categories = CategoryModel.query.all()
         return [category.to_domain() for category in categories]
 
     def get_category_by_id(self, category_id: int) -> Optional[Category]:
-        category = CategoryModel.query.get(category_id)
+        """Get category by ID with optimized query"""
+        category = CategoryModel.query.filter_by(id=category_id).first()
         return category.to_domain() if category else None
 
     def create_category(self, name: str, description: Optional[str] = None) -> Category:
-        category = CategoryModel(name=name, description=description)
+        """Create new category with optimized transaction"""
         from app.core.extensions import db
-        db.session.add(category)
-        db.session.commit()
-        return category.to_domain()
+        try:
+            category = CategoryModel(name=name, description=description)
+            db.session.add(category)
+            db.session.flush()  # Получаем ID без коммита
+            db.session.commit()
+            return category.to_domain()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def update_category(self, category_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Category]:
+        """Update category with optimized query"""
         from app.core.extensions import db
-        category = CategoryModel.query.get(category_id)
-        if not category:
+        try:
+            # Используем update для оптимизации
+            update_data = {}
+            if name is not None:
+                update_data['name'] = name
+            if description is not None:
+                update_data['description'] = description
+
+            if update_data:
+                rows_updated = CategoryModel.query.filter_by(id=category_id).update(update_data)
+                if rows_updated > 0:
+                    db.session.commit()
+                    return self.get_category_by_id(category_id)
             return None
-        if name is not None:
-            category.name = name
-        if description is not None:
-            category.description = description
-        db.session.commit()
-        return category.to_domain()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def delete_category(self, category_id: int) -> bool:
+        """Delete category with optimized query"""
         from app.core.extensions import db
-        category = CategoryModel.query.get(category_id)
-        if not category:
+        try:
+            rows_deleted = CategoryModel.query.filter_by(id=category_id).delete()
+            if rows_deleted > 0:
+                db.session.commit()
+                return True
             return False
-        db.session.delete(category)
-        db.session.commit()
-        return True
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def get_categories_paginated(self, page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
         """
-        Get categories with pagination
+        Get categories with pagination and performance optimizations
 
         Args:
             page: Page number (starting from 1)
@@ -104,7 +126,7 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
         """
         from app.core.extensions import db
 
-        # Get total count
+        # Подсчет общего количества
         total_count = CategoryModel.query.count()
 
         # Calculate total pages
@@ -113,7 +135,7 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
         # Ensure page is within valid range
         page = max(1, min(page, total_pages))
 
-        # Get paginated results
+                # Оптимизированный запрос с пагинацией
         offset = (page - 1) * per_page
         categories = CategoryModel.query.offset(offset).limit(per_page).all()
 
