@@ -24,89 +24,70 @@ def clean_project():
         "*.pyo",
         "*.pyd",
         ".Python",
-
         # Временные файлы
         "*.tmp",
         "*.temp",
         "*.swp",
         "*.swo",
         "*~",
-
         # Логи
         "*.log",
         "logs/",
-
         # Coverage и тесты
         ".coverage",
         ".pytest_cache/",
         "htmlcov/",
         ".tox/",
         ".nox/",
-
         # IDE файлы
         ".vscode/",
         ".idea/",
         "*.sublime-*",
-
         # macOS
         ".DS_Store",
         "._*",
-
         # Windows
         "Thumbs.db",
         "ehthumbs.db",
         "Desktop.ini",
-
         # Linux
         "*~",
         ".fuse_hidden*",
-
         # Docker
         ".dockerignore",
-
         # Node.js (если есть)
         "node_modules/",
         "npm-debug.log*",
         "yarn-debug.log*",
         "yarn-error.log*",
-
         # Базы данных (если есть локальные)
         "*.db",
         "*.sqlite",
         "*.sqlite3",
-
         # Временные файлы проекта
         "instance/",
         ".webassets-cache",
-
         # Локальные настройки
         ".env.local",
         ".env.development",
         ".env.test",
-
         # Backup файлы
         "*.bak",
         "*.backup",
         "*_backup",
-
         # Архивы (если есть)
         "*.zip",
         "*.tar.gz",
         "*.rar",
-
         # Документация сборки
         "docs/_build/",
         "site/",
-
         # Jupyter
         ".ipynb_checkpoints",
-
         # mypy
         ".mypy_cache/",
-
         # pytype
         ".pytype/",
-
         # Cython
         "cython_debug/",
     ]

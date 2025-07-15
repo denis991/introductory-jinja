@@ -1,9 +1,10 @@
 # Здесь определяются интерфейсы (абстракции) для репозиториев и сервисов.
-# Это контракты, которые описывают, какие методы должны быть реализованы для работы с данными или бизнес-логикой.
+# Это контракты, которые описывают, какие методы должны быть реализованы
+# для работы с данными или бизнес-логикой.
 from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 
-from .entities import Product, ProjectStats, TeamMember, User, Category
+from .entities import Category, Product, ProjectStats, TeamMember, User
 
 
 class UserRepository(ABC):
@@ -67,7 +68,12 @@ class CategoryRepository(ABC):
         pass
 
     @abstractmethod
-    def update_category(self, category_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Category]:
+    def update_category(
+        self,
+        category_id: int,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Optional[Category]:
         """Update an existing category"""
         pass
 
@@ -77,7 +83,9 @@ class CategoryRepository(ABC):
         pass
 
     @abstractmethod
-    def get_categories_paginated(self, page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
+    def get_categories_paginated(
+        self, page: int = 1, per_page: int = 12
+    ) -> Tuple[List[Category], int, int, int]:
         """
         Get categories with pagination
 

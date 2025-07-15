@@ -1,5 +1,6 @@
 # Здесь определяются модели базы данных (ORM-классы для SQLAlchemy).
-# Эти классы отражают структуру таблиц в базе данных и используются для работы с данными через ORM.
+# Эти классы отражают структуру таблиц в базе данных и используются для
+# работы с данными через ORM.
 from datetime import datetime
 
 from app.core.extensions import db
@@ -31,10 +32,11 @@ class User(db.Model):
 
 # Таблица-связка для many-to-many
 product_category = db.Table(
-    'product_category',
-    db.Column('product_id', db.Integer, db.ForeignKey('products.id')),
-    db.Column('category_id', db.Integer, db.ForeignKey('categories.id'))
+    "product_category",
+    db.Column("product_id", db.Integer, db.ForeignKey("products.id")),
+    db.Column("category_id", db.Integer, db.ForeignKey("categories.id")),
 )
+
 
 class Product(db.Model):
     """Product SQLAlchemy model"""
@@ -49,9 +51,7 @@ class Product(db.Model):
     rating = db.Column(db.Float, nullable=True)
     # обратная связь
     categories = db.relationship(
-        "Category",
-        secondary=product_category,
-        back_populates="products"
+        "Category", secondary=product_category, back_populates="products"
     )
 
     def to_domain(self):
@@ -76,7 +76,9 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255), nullable=True)
-    products = db.relationship("Product", secondary=product_category, back_populates="categories")
+    products = db.relationship(
+        "Product", secondary=product_category, back_populates="categories"
+    )
 
     def to_domain(self):
         """Convert to domain entity"""

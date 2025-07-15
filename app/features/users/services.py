@@ -2,13 +2,17 @@
 Сервисы для работы с пользователями
 Используют реальные репозитории и модели
 """
-from app.infra.db.models import User as UserModel
+
 from app.core.extensions import db
+from app.infra.db.models import User as UserModel
+
+
 def get_all_users():
     """Получить всех пользователей"""
 
     users = UserModel.query.all()
     return [user.to_domain() for user in users]
+
 
 def get_user_by_id(user_id):
     """Получить пользователя по ID"""
@@ -16,22 +20,22 @@ def get_user_by_id(user_id):
     user = UserModel.query.get(user_id)
     return user.to_domain() if user else None
 
+
 def create_user(username, email, first_name=None, last_name=None):
     """Создать нового пользователя"""
 
     # Используем username как name, так как в модели User нет поля username
-    user = UserModel(
-        name=username,
-        email=email,
-        is_admin=False
-    )
+    user = UserModel(name=username, email=email, is_admin=False)
 
     db.session.add(user)
     db.session.commit()
 
     return user.to_domain()
 
-def update_user(user_id, username=None, email=None, first_name=None, last_name=None, is_active=None):
+
+def update_user(
+    user_id, username=None, email=None, first_name=None, last_name=None, is_active=None
+):
     """Обновить пользователя"""
     user = UserModel.query.get(user_id)
     if not user:
@@ -46,6 +50,7 @@ def update_user(user_id, username=None, email=None, first_name=None, last_name=N
 
     db.session.commit()
     return user.to_domain()
+
 
 def delete_user(user_id):
     """Удалить пользователя"""

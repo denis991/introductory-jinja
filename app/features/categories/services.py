@@ -1,9 +1,10 @@
 from typing import List, Optional, Tuple
+
 from app.domain.entities import Category
 from app.domain.interfaces import CategoryRepository
-
 # Можно внедрять репозиторий через DI, но для простоты создаём экземпляр здесь
 from app.infra.db.repositories import SQLAlchemyCategoryRepository
+
 category_repo: CategoryRepository = SQLAlchemyCategoryRepository()
 
 
@@ -12,7 +13,9 @@ def get_all_categories() -> List[Category]:
     return category_repo.get_all_categories()
 
 
-def get_categories_paginated(page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
+def get_categories_paginated(
+    page: int = 1, per_page: int = 12
+) -> Tuple[List[Category], int, int, int]:
     """
     Получить категории с пагинацией
 
@@ -36,7 +39,9 @@ def create_category(name: str, description: Optional[str] = None) -> Category:
     return category_repo.create_category(name, description)
 
 
-def update_category(category_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Category]:
+def update_category(
+    category_id: int, name: Optional[str] = None, description: Optional[str] = None
+) -> Optional[Category]:
     """Обновить существующую категорию"""
     return category_repo.update_category(category_id, name, description)
 

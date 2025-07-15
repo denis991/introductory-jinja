@@ -1,16 +1,18 @@
 # Здесь реализуются репозитории — классы для доступа к данным в базе данных (CRUD-операции).
-# Репозитории инкапсулируют работу с ORM и позволяют отделить бизнес-логику от деталей хранения данных.
+# Репозитории инкапсулируют работу с ORM и позволяют отделить
+# бизнес-логику от деталей хранения данных.
+import math
 from datetime import datetime
 from typing import List, Optional, Tuple
-import math
 
-from app.domain.entities import Product, ProjectStats, TeamMember, User, Category
-from app.domain.interfaces import (ProductRepository, TeamRepository,
-                                  UserRepository, CategoryRepository)
+from app.domain.entities import (Category, Product, ProjectStats, TeamMember,
+                                User)
+from app.domain.interfaces import (CategoryRepository, ProductRepository,
+                                   TeamRepository, UserRepository)
 
+from .models import Category as CategoryModel
 from .models import Product as ProductModel
 from .models import User as UserModel
-from .models import Category as CategoryModel
 
 
 class SQLAlchemyUserRepository(UserRepository):
@@ -69,6 +71,7 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
     def create_category(self, name: str, description: Optional[str] = None) -> Category:
         """Create new category with optimized transaction"""
         from app.core.extensions import db
+
         try:
             category = CategoryModel(name=name, description=description)
             db.session.add(category)
@@ -79,19 +82,27 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
             db.session.rollback()
             raise e
 
-    def update_category(self, category_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Category]:
+    def update_category(
+        self,
+        category_id: int,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Optional[Category]:
         """Update category with optimized query"""
         from app.core.extensions import db
+
         try:
             # Используем update для оптимизации
             update_data = {}
             if name is not None:
-                update_data['name'] = name
+                update_data["name"] = name
             if description is not None:
-                update_data['description'] = description
+                update_data["description"] = description
 
             if update_data:
-                rows_updated = CategoryModel.query.filter_by(id=category_id).update(update_data)
+                rows_updated = CategoryModel.query.filter_by(id=category_id).update(
+                    update_data
+                )
                 if rows_updated > 0:
                     db.session.commit()
                     return self.get_category_by_id(category_id)
@@ -103,6 +114,7 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
     def delete_category(self, category_id: int) -> bool:
         """Delete category with optimized query"""
         from app.core.extensions import db
+
         try:
             rows_deleted = CategoryModel.query.filter_by(id=category_id).delete()
             if rows_deleted > 0:
@@ -113,7 +125,9 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
             db.session.rollback()
             raise e
 
-    def get_categories_paginated(self, page: int = 1, per_page: int = 12) -> Tuple[List[Category], int, int, int]:
+    def get_categories_paginated(
+        self, page: int = 1, per_page: int = 12
+    ) -> Tuple[List[Category], int, int, int]:
         """
         Get categories with pagination and performance optimizations
 
@@ -135,7 +149,7 @@ class SQLAlchemyCategoryRepository(CategoryRepository):
         # Ensure page is within valid range
         page = max(1, min(page, total_pages))
 
-                # Оптимизированный запрос с пагинацией
+        # Оптимизированный запрос с пагинацией
         offset = (page - 1) * per_page
         categories = CategoryModel.query.offset(offset).limit(per_page).all()
 

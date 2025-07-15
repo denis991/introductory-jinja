@@ -3,8 +3,8 @@ Swagger/OpenAPI документация для Flask приложения
 Настройка Flask-RESTX для автоматической генерации API документации
 """
 
-from flask_restx import Api, Resource, fields, Namespace
 from flask import current_app
+from flask_restx import Api, Namespace, Resource, fields
 
 # Создаем основной API объект
 api = Api(
@@ -178,87 +178,148 @@ curl -X DELETE "http://localhost:5006/api/products/1" \\
 )
 
 # Создаем пространства имен для разных модулей
-categories_ns = Namespace('categories', description='Операции с категориями')
-products_ns = Namespace('products', description='Операции с товарами')
-users_ns = Namespace('users', description='Операции с пользователями')
+categories_ns = Namespace("categories", description="Операции с категориями")
+products_ns = Namespace("products", description="Операции с товарами")
+users_ns = Namespace("users", description="Операции с пользователями")
 
 # Модели для сериализации данных
-category_model = api.model('Category', {
-    'id': fields.Integer(readonly=True, description='Уникальный идентификатор категории'),
-    'name': fields.String(required=True, description='Название категории', max_length=100),
-    'description': fields.String(description='Описание категории', max_length=500),
-    'created_at': fields.DateTime(readonly=True, description='Дата создания'),
-    'updated_at': fields.DateTime(readonly=True, description='Дата последнего обновления')
-})
+category_model = api.model(
+    "Category",
+    {
+        "id": fields.Integer(
+            readonly=True, description="Уникальный идентификатор категории"
+        ),
+        "name": fields.String(
+            required=True, description="Название категории", max_length=100
+        ),
+        "description": fields.String(description="Описание категории", max_length=500),
+        "created_at": fields.DateTime(readonly=True, description="Дата создания"),
+        "updated_at": fields.DateTime(
+            readonly=True, description="Дата последнего обновления"
+        ),
+    },
+)
 
-category_create_model = api.model('CategoryCreate', {
-    'name': fields.String(required=True, description='Название категории', max_length=100),
-    'description': fields.String(description='Описание категории', max_length=500)
-})
+category_create_model = api.model(
+    "CategoryCreate",
+    {
+        "name": fields.String(
+            required=True, description="Название категории", max_length=100
+        ),
+        "description": fields.String(description="Описание категории", max_length=500),
+    },
+)
 
-category_update_model = api.model('CategoryUpdate', {
-    'name': fields.String(description='Название категории', max_length=100),
-    'description': fields.String(description='Описание категории', max_length=500)
-})
+category_update_model = api.model(
+    "CategoryUpdate",
+    {
+        "name": fields.String(description="Название категории", max_length=100),
+        "description": fields.String(description="Описание категории", max_length=500),
+    },
+)
 
-product_model = api.model('Product', {
-    'id': fields.Integer(readonly=True, description='Уникальный идентификатор товара'),
-    'name': fields.String(required=True, description='Название товара', max_length=100),
-    'description': fields.String(description='Описание товара', max_length=500),
-    'price': fields.Float(required=True, description='Цена товара', min=0.01, max=999999.99),
-    'category_ids': fields.List(fields.Integer, description='ID категорий товара'),
-    'categories': fields.List(fields.Nested(category_model), readonly=True, description='Категории товара'),
-    'created_at': fields.DateTime(readonly=True, description='Дата создания'),
-    'updated_at': fields.DateTime(readonly=True, description='Дата последнего обновления')
-})
+product_model = api.model(
+    "Product",
+    {
+        "id": fields.Integer(
+            readonly=True, description="Уникальный идентификатор товара"
+        ),
+        "name": fields.String(
+            required=True, description="Название товара", max_length=100
+        ),
+        "description": fields.String(description="Описание товара", max_length=500),
+        "price": fields.Float(
+            required=True, description="Цена товара", min=0.01, max=999999.99
+        ),
+        "category_ids": fields.List(fields.Integer, description="ID категорий товара"),
+        "categories": fields.List(
+            fields.Nested(category_model), readonly=True, description="Категории товара"
+        ),
+        "created_at": fields.DateTime(readonly=True, description="Дата создания"),
+        "updated_at": fields.DateTime(
+            readonly=True, description="Дата последнего обновления"
+        ),
+    },
+)
 
-product_create_model = api.model('ProductCreate', {
-    'name': fields.String(required=True, description='Название товара', max_length=100),
-    'description': fields.String(description='Описание товара', max_length=500),
-    'price': fields.Float(required=True, description='Цена товара', min=0.01, max=999999.99),
-    'category_ids': fields.List(fields.Integer, description='ID категорий товара')
-})
+product_create_model = api.model(
+    "ProductCreate",
+    {
+        "name": fields.String(
+            required=True, description="Название товара", max_length=100
+        ),
+        "description": fields.String(description="Описание товара", max_length=500),
+        "price": fields.Float(
+            required=True, description="Цена товара", min=0.01, max=999999.99
+        ),
+        "category_ids": fields.List(fields.Integer, description="ID категорий товара"),
+    },
+)
 
-product_update_model = api.model('ProductUpdate', {
-    'name': fields.String(description='Название товара', max_length=100),
-    'description': fields.String(description='Описание товара', max_length=500),
-    'price': fields.Float(description='Цена товара', min=0.01, max=999999.99),
-    'category_ids': fields.List(fields.Integer, description='ID категорий товара')
-})
+product_update_model = api.model(
+    "ProductUpdate",
+    {
+        "name": fields.String(description="Название товара", max_length=100),
+        "description": fields.String(description="Описание товара", max_length=500),
+        "price": fields.Float(description="Цена товара", min=0.01, max=999999.99),
+        "category_ids": fields.List(fields.Integer, description="ID категорий товара"),
+    },
+)
 
-user_model = api.model('User', {
-    'id': fields.Integer(readonly=True, description='Уникальный идентификатор пользователя'),
-    'username': fields.String(required=True, description='Имя пользователя', max_length=80),
-    'email': fields.String(required=True, description='Email пользователя', max_length=120),
-    'first_name': fields.String(description='Имя', max_length=50),
-    'last_name': fields.String(description='Фамилия', max_length=50),
-    'is_active': fields.Boolean(description='Активен ли пользователь'),
-    'created_at': fields.DateTime(readonly=True, description='Дата регистрации'),
-    'updated_at': fields.DateTime(readonly=True, description='Дата последнего обновления')
-})
+user_model = api.model(
+    "User",
+    {
+        "id": fields.Integer(
+            readonly=True, description="Уникальный идентификатор пользователя"
+        ),
+        "username": fields.String(
+            required=True, description="Имя пользователя", max_length=80
+        ),
+        "email": fields.String(
+            required=True, description="Email пользователя", max_length=120
+        ),
+        "first_name": fields.String(description="Имя", max_length=50),
+        "last_name": fields.String(description="Фамилия", max_length=50),
+        "is_active": fields.Boolean(description="Активен ли пользователь"),
+        "created_at": fields.DateTime(readonly=True, description="Дата регистрации"),
+        "updated_at": fields.DateTime(
+            readonly=True, description="Дата последнего обновления"
+        ),
+    },
+)
 
 # Модели для ответов с ошибками
-error_model = api.model('Error', {
-    'message': fields.String(required=True, description='Сообщение об ошибке'),
-    'code': fields.String(description='Код ошибки'),
-    'details': fields.Raw(description='Дополнительные детали ошибки')
-})
+error_model = api.model(
+    "Error",
+    {
+        "message": fields.String(required=True, description="Сообщение об ошибке"),
+        "code": fields.String(description="Код ошибки"),
+        "details": fields.Raw(description="Дополнительные детали ошибки"),
+    },
+)
 
 # Модели для успешных ответов
-success_model = api.model('Success', {
-    'message': fields.String(required=True, description='Сообщение об успехе'),
-    'data': fields.Raw(description='Данные ответа')
-})
+success_model = api.model(
+    "Success",
+    {
+        "message": fields.String(required=True, description="Сообщение об успехе"),
+        "data": fields.Raw(description="Данные ответа"),
+    },
+)
 
 # Модели для пагинации
-pagination_model = api.model('Pagination', {
-    'page': fields.Integer(description='Текущая страница'),
-    'per_page': fields.Integer(description='Количество элементов на странице'),
-    'total': fields.Integer(description='Общее количество элементов'),
-    'pages': fields.Integer(description='Общее количество страниц'),
-    'has_next': fields.Boolean(description='Есть ли следующая страница'),
-    'has_prev': fields.Boolean(description='Есть ли предыдущая страница')
-})
+pagination_model = api.model(
+    "Pagination",
+    {
+        "page": fields.Integer(description="Текущая страница"),
+        "per_page": fields.Integer(description="Количество элементов на странице"),
+        "total": fields.Integer(description="Общее количество элементов"),
+        "pages": fields.Integer(description="Общее количество страниц"),
+        "has_next": fields.Boolean(description="Есть ли следующая страница"),
+        "has_prev": fields.Boolean(description="Есть ли предыдущая страница"),
+    },
+)
+
 
 # Функция для инициализации API
 def init_swagger(app):

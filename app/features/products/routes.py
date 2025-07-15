@@ -1,5 +1,6 @@
 # Здесь определяются маршруты (routes) для страницы продуктов.
-# Каждый маршрут — это функция, которая обрабатывает HTTP-запросы и возвращает ответ (HTML-страницу или данные).
+# Каждый маршрут — это функция, которая обрабатывает HTTP-запросы и
+# возвращает ответ (HTML-страницу или данные).
 from flask import Blueprint, render_template, request
 
 from app.features.products.services import ProductService

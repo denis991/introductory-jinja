@@ -1,15 +1,16 @@
 import os
 
+from dotenv import load_dotenv
 from flask import Flask, redirect, url_for
 
 from app.blueprints import register_blueprints
-from app.interfaces.controllers.cli import register_commands  # Импортируем функцию для регистрации CLI-команд
-from app.shared.swagger import init_swagger  # Импортируем функцию для инициализации Swagger
+from app.interfaces.controllers.cli import register_commands
+# Импортируем функцию для регистрации CLI-команд
+from app.shared.swagger import init_swagger
 
 from .config import Config  # Импортируем класс конфигурации
-from .extensions import db, migrate  # Импортируем расширения для работы с БД и миграциями
+from .extensions import db, migrate
 
-from dotenv import load_dotenv  # Импортируем функцию для загрузки переменных окружения из .env файла
 load_dotenv()  # Загружаем переменные окружения из .env файла
 
 
@@ -40,7 +41,5 @@ def create_app(config_class=Config):
 
     # Регистрируем кастомные CLI-команды
     register_commands(app)
-
-
 
     return app  # Возвращаем готовое Flask-приложение

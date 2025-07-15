@@ -2,13 +2,14 @@
 Сервисы для работы с товарами
 Содержит как класс ProductService для UI, так и функции для API
 """
+
 from typing import List, Optional
 
+from app.core.extensions import db
 from app.domain.entities import Product
 from app.domain.interfaces import ProductRepository
-from app.infra.db.repositories import SQLAlchemyProductRepository
 from app.infra.db.models import Product as ProductModel
-from app.core.extensions import db
+from app.infra.db.repositories import SQLAlchemyProductRepository
 
 
 class ProductService:
@@ -45,21 +46,22 @@ def get_all_products():
     repository = SQLAlchemyProductRepository()
     return repository.get_all_products()
 
+
 def get_product_by_id(product_id):
     """Получить товар по ID"""
     repository = SQLAlchemyProductRepository()
     return repository.get_product_by_id(product_id)
 
+
 def create_product(name, description=None, price=0.0, category_ids=None):
     """Создать новый товар"""
-
 
     product = ProductModel(
         name=name,
         price=price,
         category=description or "General",  # Используем description как category
         in_stock=True,
-        rating=0.0
+        rating=0.0,
     )
 
     db.session.add(product)
@@ -67,7 +69,10 @@ def create_product(name, description=None, price=0.0, category_ids=None):
 
     return product.to_domain()
 
-def update_product(product_id, name=None, description=None, price=None, category_ids=None):
+
+def update_product(
+    product_id, name=None, description=None, price=None, category_ids=None
+):
     """Обновить товар"""
 
     product = ProductModel.query.get(product_id)
@@ -83,6 +88,7 @@ def update_product(product_id, name=None, description=None, price=None, category
 
     db.session.commit()
     return product.to_domain()
+
 
 def delete_product(product_id):
     """Удалить товар"""

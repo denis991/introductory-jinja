@@ -1,44 +1,44 @@
 # Makefile для Flask + Jinja2 проекта
 # ---------------------------------------------------
 # Targets:
-#   venv     — создать виртуальное окружение
-#   install  — установить зависимости из requirements.txt
-#   run      — запустить dev-сервер на порту 5006
-#   kill-port — убить процесс на указанном порту (по умолчанию 5006)
-#   kill-all-ports — убить все процессы на всех портах
-#   freeze   — зафиксировать текущие зависимости
-#   clean    — удалить окружение и кэш
-#   docker-dev — запустить всё в Docker (разработка)
-#   docker-prod — запустить всё в Docker (продакшн)
-#   docker-stop — остановить Docker контейнеры
-#   docker-clean — очистить Docker контейнеры и образы
+#   venv           — создать виртуальное окружение
+#   install        — установить зависимости из requirements.txt
+#   run            — запустить dev-сервер на порту 5006
+#   test           — запустить все тесты
+#   clean          — удалить окружение и кэш
+#   docker-dev     — запустить всё в Docker (разработка)
+#   docker-prod    — запустить всё в Docker (продакшн)
+#   docker-stop    — остановить Docker контейнеры
+#   docker-clean   — очистить только данные и контейнеры этого проекта
+#   migrate-reset  — полный сброс БД (локально или в Docker)
 # ---------------------------------------------------
 
-# Shell
+# ========== [ Общие переменные ] ==========
 SHELL := /bin/bash
-
-# Имя виртуального окружения
 VENV := .venv
-
-# Python-интерпретатор внутри venv
 PY := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 FLASK := $(VENV)/bin/flask
-
-# Файл с зависимостями
 REQ := requirements.txt
-
-# Порт по умолчанию
 DEFAULT_PORT := 5006
+DB_ENV ?= local
+PG_DB ?= jinja_app
+PG_USER ?= postgres
+PG_HOST ?= localhost
 
-.PHONY: all venv install run kill-port kill-all-ports freeze clean help setup dev test test-unit test-integration docker-dev docker-prod docker-stop docker-clean docker-build docker-run docker-compose-up docker-compose-down init-db seed-db
+.PHONY: all venv install run help test test-unit test-integration clean freeze \
+        docker-dev docker-prod docker-stop docker-clean docker-db-clean docker-logs docker-shell docker-db-shell \
+        init-db seed-db migrate-init migrate-create migrate migrate-downgrade drop-db-local recreate-db-local migrate-reset kill-port kill-all-ports
 
-all: venv install run
-
+# ========== [ HELP ] ==========
 help: ## Показать справку
-	@echo "Доступные команды:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo "\n\033[1;34mДоступные команды:\033[0m"
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-22s\033[0m %s\n", $$1, $$2}'
+	@echo "\n\033[1;33mПримеры:\033[0m"
+	@echo "  make migrate-reset DB_ENV=local   # полный сброс БД локально"
+	@echo "  make migrate-reset DB_ENV=docker  # полный сброс БД в Docker"
 
+# ========== [ VENV & DEPENDENCIES ] ==========
 venv: ## Создать виртуальное окружение
 	@echo "⚙️  Создаём виртуальное окружение .venv..."
 	@python3 -m venv .venv
@@ -49,45 +49,71 @@ install: ## Установить зависимости
 	@.venv/bin/pip install --upgrade pip
 	@.venv/bin/pip install -r requirements.txt
 	@echo "✅ Зависимости установлены."
-# source .venv/bin/activate
 
-run: ## Запустить приложение
+freeze: ## Заморозить зависимости
+	@.venv/bin/pip freeze > requirements.txt
+	@echo "✅ Зависимости заморожены в requirements.txt"
+
+# ========== [ RUN & DEV ] ==========
+run: ## Запустить приложение локально
 	@echo "🔫 Очищаем порт $(DEFAULT_PORT)..."
 	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || true
 	@echo "✅ Порт $(DEFAULT_PORT) свободен."
 	@echo "🚀 Запуск Flask на порту $(DEFAULT_PORT)..."
-	@echo "# Экспортируем переменные окружения:"
-	@echo "FLASK_APP=run.py \\"
-	@echo "        FLASK_ENV=development \\"
-	@echo "        FLASK_RUN_PORT=$(DEFAULT_PORT) \\"
-	@echo "        .venv/bin/flask run"
-	@FLASK_APP=run.py \
-		FLASK_ENV=development \
-		FLASK_RUN_PORT=$(DEFAULT_PORT) \
-		.venv/bin/flask run
+	@FLASK_APP=run.py FLASK_ENV=development FLASK_RUN_PORT=$(DEFAULT_PORT) .venv/bin/flask run
+# 		@echo "# Экспортируем переменные окружения:"
+# 	@echo "FLASK_APP=run.py \\"
+# 	@echo "        FLASK_ENV=development \\"
+# 	@echo "        FLASK_RUN_PORT=$(DEFAULT_PORT) \\"
+# 	@echo "        .venv/bin/flask run"
+# 	@FLASK_APP=run.py \
+# 		FLASK_ENV=development \
+# 		FLASK_RUN_PORT=$(DEFAULT_PORT) \
+# 		.venv/bin/flask run
 
-setup: install init-db seed-db ## Полная настройка проекта
+setup: install init-db seed-db ## Полная настройка проекта локально
+	@echo "✅ Проект настроен локально."
 
-dev: setup run ## Настройка и запуск для разработки
+dev: setup run ## Настройка и запуск для разработки локально
+	@echo "✅ Локальная разработка запущена."
 
-test: ## Запустить тесты
+# ========== [ TESTS ] ==========
+test: ## Запустить все тесты
+	@echo "🧪 Запуск всех тестов..."
 	@.venv/bin/python -m pytest tests/ -v
+	@echo "✅ Все тесты завершены."
 
 test-unit: ## Запустить unit тесты
+	@echo "🧪 Запуск unit тестов..."
 	@.venv/bin/python -m pytest tests/unit/ -v
+	@echo "✅ Unit тесты завершены."
 
 test-integration: ## Запустить integration тесты
+	@echo "🧪 Запуск integration тестов..."
 	@.venv/bin/python -m pytest tests/integration/ -v
+	@echo "✅ Integration тесты завершены."
 
+# ========== [ CLEAN ] ==========
 clean: ## Очистить кэш Python
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@find . -type f -name "*.pyc" -delete
+	@echo "✅ Кэш Python очищен."
 
-# Docker команды
+kill-port: ## Убить процесс на порту $(DEFAULT_PORT)
+	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || echo "Порт $(DEFAULT_PORT) уже свободен"
+	@echo "✅ Порт $(DEFAULT_PORT) очищен."
+
+kill-all-ports: ## Убить все процессы на портах 5000-5010
+	@for port in {5000..5010}; do \
+		lsof -ti:$$port | xargs kill -9 2>/dev/null || true; \
+	done
+	@echo "✅ Все порты 5000-5010 очищены."
+
+# ========== [ DOCKER BLOCK ] ==========
+# --- Docker: запуск, остановка, логи, shell ---
 docker-dev: ## Запустить всё в Docker (разработка)
 	@echo "🐳 Запускаем приложение в Docker (разработка)..."
 	@docker-compose up --build -d
-	@echo "⏳ Ждём запуска приложения..."
 	@sleep 10
 	@echo "✅ Приложение запущено на http://localhost:$(DEFAULT_PORT)"
 	@echo "📊 База данных доступна на localhost:5432"
@@ -123,98 +149,76 @@ docker-shell: ## Войти в контейнер приложения
 docker-db-shell: ## Войти в контейнер базы данных
 	@docker-compose exec db psql -U postgres -d jinja_app
 
-# Устаревшие команды (оставляем для совместимости)
-docker-build: ## Собрать Docker образ
-	@docker build -t jinja-app .
-
-docker-run: ## Запустить Docker контейнер
-	@docker run -p $(DEFAULT_PORT):$(DEFAULT_PORT) jinja-app
-
-docker-compose-up: ## Запустить с Docker Compose
-	@docker-compose up --build
-
-
-# =====================[ DB Management ]=====================
-
-# Выбор среды: local (по умолчанию) или docker
-DB_ENV ?= local
-
-# Строки подключения и команды для разных сред
+# ========== [ DB MANAGEMENT BLOCK ] ==========
+# --- Универсальные команды для локали и Docker ---
 ifeq ($(DB_ENV),docker)
 	DB_EXEC = docker-compose exec web flask
 else
 	DB_EXEC = .venv/bin/flask
 endif
 
-# Инициализация БД
 init-db: ## Инициализировать базу данных (локально или в Docker)
 	@echo "Инициализация БД ($(DB_ENV))..."
 	@FLASK_APP=run.py $(DB_EXEC) init-db
+	@echo "✅ База данных инициализирована."
 
-# Сидирование БД
 seed-db: ## Заполнить базу данных тестовыми данными (локально или в Docker)
 	@echo "Сидирование БД ($(DB_ENV))..."
 	@FLASK_APP=app.core:create_app $(DB_EXEC) seed-db
+	@echo "✅ База данных заполнена тестовыми данными."
 
-# Миграции
 migrate-init: ## Инициализировать Flask-Migrate (локально или в Docker)
 	@echo "Инициализация миграций ($(DB_ENV))..."
 	@FLASK_APP=app.core:create_app $(DB_EXEC) db init
+	@echo "✅ Миграции инициализированы."
 
 migrate-create: ## Создать новую миграцию (локально или в Docker)
 	@echo "Создание миграции ($(DB_ENV))..."
 	@FLASK_APP=app.core:create_app $(DB_EXEC) db migrate -m "Auto migration"
+	@echo "✅ Миграция создана."
 
 migrate: ## Применить миграции (локально или в Docker)
 	@echo "Применение миграций ($(DB_ENV))..."
 	@FLASK_APP=app.core:create_app $(DB_EXEC) db upgrade
+	@echo "✅ Миграции применены."
 
 migrate-downgrade: ## Откатить миграцию (локально или в Docker)
 	@echo "Откат миграции ($(DB_ENV))..."
 	@FLASK_APP=app.core:create_app $(DB_EXEC) db downgrade prev
+	@echo "✅ Миграция откатилась."
 
-# Удалить локальную базу данных PostgreSQL
-# Использует переменные окружения для имени БД, пользователя и хоста
-PG_DB ?= jinja_app
-PG_USER ?= postgres
-PG_HOST ?= localhost
-
-# Удалить базу данных локально
+# --- Только для локальной среды ---
 ifeq ($(DB_ENV),local)
 drop-db-local: ## [LOCAL] Удалить базу данных PostgreSQL (jinja_app)
 	@echo "Удаляем базу данных $(PG_DB)..."
 	@PGPASSWORD=$(POSTGRES_PASSWORD) psql -U $(PG_USER) -h $(PG_HOST) -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$(PG_DB)';" || true
 	@PGPASSWORD=$(POSTGRES_PASSWORD) psql -U $(PG_USER) -h $(PG_HOST) -d postgres -c "DROP DATABASE IF EXISTS $(PG_DB);"
+	@echo "✅ База данных $(PG_DB) удалена."
 
 recreate-db-local: drop-db-local ## [LOCAL] Пересоздать базу данных PostgreSQL (jinja_app)
 	@echo "Создаём базу данных $(PG_DB)..."
 	@PGPASSWORD=$(POSTGRES_PASSWORD) psql -U $(PG_USER) -h $(PG_HOST) -d postgres -c "CREATE DATABASE $(PG_DB) OWNER $(PG_USER);"
+	@echo "✅ База данных $(PG_DB) создана."
 endif
 
-# Обновлённый полный сброс БД -> make migrate-reset DB_ENV=docker
+# --- Полный сброс БД ---# Обновлённый полный сброс БД -> make migrate-reset DB_ENV=docker
 migrate-reset: ## Полный сброс: удалить БД, применить миграции, накатить сиды (локально или в Docker)
 	@echo "🔄 Полный сброс базы данных ($(DB_ENV))..."
 ifeq ($(DB_ENV),local)
 	$(MAKE) recreate-db-local
 endif
+ifeq ($(DB_ENV),docker)
+	@echo "🧹 Очищаем volume базы данных Docker..."
+	@docker-compose down -v
+	@docker-compose up -d db
+	@sleep 10
+	@echo "✅ Volume базы данных Docker пересоздан."
+endif
 	@FLASK_APP=app.core:create_app $(DB_EXEC) db upgrade
 	@FLASK_APP=app.core:create_app $(DB_EXEC) seed-db
-	@echo "✅ База данных сброшена и заполнена тестовыми данными"
+	@echo "✅ База данных сброшена и заполнена тестовыми данными."
 
-# =====================[ End DB Management ]=====================
-
-kill-port: ## Убить процесс на порту $(DEFAULT_PORT)
-	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || echo "Порт $(DEFAULT_PORT) уже свободен"
-
-kill-all-ports: ## Убить все процессы на портах 5000-5010
-	@for port in {5000..5010}; do \
-		lsof -ti:$$port | xargs kill -9 2>/dev/null || true; \
-	done
-	@echo "✅ Все порты 5000-5010 очищены"
-
-freeze: ## Заморозить зависимости
-	@.venv/bin/pip freeze > requirements.txt
-	@echo "✅ Зависимости заморожены в requirements.txt"
+# ========== [ END ] ==========
 
 # Для инициализации и наполнения БД
 init-db-old:
