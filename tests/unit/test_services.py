@@ -1,11 +1,14 @@
 import unittest
 from datetime import datetime
 from unittest.mock import Mock
+import os
 
 from app.domain.entities import Product, ProjectStats, TeamMember, User
 from app.features.about.services import AboutService
 from app.features.home.services import HomeService
 from app.features.products.services import ProductService
+
+SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
 
 class TestHomeService(unittest.TestCase):

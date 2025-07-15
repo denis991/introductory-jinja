@@ -49,6 +49,7 @@ install: ## Установить зависимости
 	@.venv/bin/pip install --upgrade pip
 	@.venv/bin/pip install -r requirements.txt
 	@echo "✅ Зависимости установлены."
+# source .venv/bin/activate
 
 run: ## Запустить приложение
 	@echo "🔫 Очищаем порт $(DEFAULT_PORT)..."
@@ -102,11 +103,16 @@ docker-stop: ## Остановить Docker контейнеры
 	@docker-compose down
 	@echo "✅ Контейнеры остановлены"
 
-docker-clean: ## Очистить Docker контейнеры и образы
-	@echo "🧹 Очищаем Docker контейнеры и образы..."
-	@docker-compose down -v --rmi all
-	@docker system prune -f
-	@echo "✅ Docker очищен"
+docker-clean: ## Очистить только данные и контейнеры этого проекта (без глобального prune!)
+	@echo "🧹 Очищаем только контейнеры и volume этого проекта..."
+	@docker-compose down -v
+	@echo "✅ Контейнеры и volume проекта удалены"
+
+docker-db-clean: ## Удалить только volume базы данных проекта
+	@echo "🧹 Удаляем volume postgres_data..."
+	@docker-compose down
+	@docker volume rm introductory-jinja_postgres_data || true
+	@echo "✅ Volume базы данных удалён"
 
 docker-logs: ## Показать логи Docker контейнеров
 	@docker-compose logs -f
@@ -127,83 +133,75 @@ docker-run: ## Запустить Docker контейнер
 docker-compose-up: ## Запустить с Docker Compose
 	@docker-compose up --build
 
-docker-compose-down: ## Остановить Docker Compose
-	@docker-compose down
 
-# ----------------------------------------------------------
-# Для локальной разработки:
-# make migrate-init — инициализация
-# make migrate-create — создать миграцию
-# make migrate — применить
-# make migrate-downgrade — откатить
-# Порядок действий:
-# Сначала выполни make migrate-init-docker
-# Потом make migrate-create-docker
-# Затем make migrate-docker
+# =====================[ DB Management ]=====================
 
-init-db: ## Инициализировать базу данных
-	@FLASK_APP=run.py .venv/bin/flask init-db
+# Выбор среды: local (по умолчанию) или docker
+DB_ENV ?= local
 
-seed-db: ## Заполнить базу данных тестовыми данными (локально)
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask seed-db
+# Строки подключения и команды для разных сред
+ifeq ($(DB_ENV),docker)
+	DB_EXEC = docker-compose exec web flask
+else
+	DB_EXEC = .venv/bin/flask
+endif
 
-seed-db-docker: ## Заполнить базу данных тестовыми данными в Docker
-	@docker-compose exec web flask seed-db
+# Инициализация БД
+init-db: ## Инициализировать базу данных (локально или в Docker)
+	@echo "Инициализация БД ($(DB_ENV))..."
+	@FLASK_APP=run.py $(DB_EXEC) init-db
 
-migrate-init: ## Инициализировать Flask-Migrate (создать папку migrations)
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db init
+# Сидирование БД
+seed-db: ## Заполнить базу данных тестовыми данными (локально или в Docker)
+	@echo "Сидирование БД ($(DB_ENV))..."
+	@FLASK_APP=app.core:create_app $(DB_EXEC) seed-db
 
-migrate-create: ## Создать новую миграцию
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db migrate -m "Auto migration"
+# Миграции
+migrate-init: ## Инициализировать Flask-Migrate (локально или в Docker)
+	@echo "Инициализация миграций ($(DB_ENV))..."
+	@FLASK_APP=app.core:create_app $(DB_EXEC) db init
 
-migrate: ## Применить миграции Alembic/Flask-Migrate (локально)
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db upgrade
+migrate-create: ## Создать новую миграцию (локально или в Docker)
+	@echo "Создание миграции ($(DB_ENV))..."
+	@FLASK_APP=app.core:create_app $(DB_EXEC) db migrate -m "Auto migration"
 
-##################Docker
-migrate-downgrade: ## Откатить миграцию Alembic/Flask-Migrate (локально)
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db downgrade prev
+migrate: ## Применить миграции (локально или в Docker)
+	@echo "Применение миграций ($(DB_ENV))..."
+	@FLASK_APP=app.core:create_app $(DB_EXEC) db upgrade
 
-migrate-docker: ## Применить миграции внутри Docker-контейнера
-	@docker-compose exec web flask db upgrade
+migrate-downgrade: ## Откатить миграцию (локально или в Docker)
+	@echo "Откат миграции ($(DB_ENV))..."
+	@FLASK_APP=app.core:create_app $(DB_EXEC) db downgrade prev
 
-migrate-downgrade-docker: ## Откатить миграцию внутри Docker-контейнера
-	@docker-compose exec web flask db downgrade prev
+# Удалить локальную базу данных PostgreSQL
+# Использует переменные окружения для имени БД, пользователя и хоста
+PG_DB ?= jinja_app
+PG_USER ?= postgres
+PG_HOST ?= localhost
 
-migrate-init-docker: ## Инициализировать Flask-Migrate в Docker
-	@docker-compose exec web flask db init
+# Удалить базу данных локально
+ifeq ($(DB_ENV),local)
+drop-db-local: ## [LOCAL] Удалить базу данных PostgreSQL (jinja_app)
+	@echo "Удаляем базу данных $(PG_DB)..."
+	@PGPASSWORD=$(POSTGRES_PASSWORD) psql -U $(PG_USER) -h $(PG_HOST) -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$(PG_DB)';" || true
+	@PGPASSWORD=$(POSTGRES_PASSWORD) psql -U $(PG_USER) -h $(PG_HOST) -d postgres -c "DROP DATABASE IF EXISTS $(PG_DB);"
 
-migrate-create-docker: ## Создать новую миграцию в Docker
-	@docker-compose exec web flask db migrate -m "Auto migration"
+recreate-db-local: drop-db-local ## [LOCAL] Пересоздать базу данных PostgreSQL (jinja_app)
+	@echo "Создаём базу данных $(PG_DB)..."
+	@PGPASSWORD=$(POSTGRES_PASSWORD) psql -U $(PG_USER) -h $(PG_HOST) -d postgres -c "CREATE DATABASE $(PG_DB) OWNER $(PG_USER);"
+endif
 
-migrate-status: ## Показать статус миграций
-	@docker-compose exec web flask db current
-
-migrate-history: ## Показать историю миграций
-	@docker-compose exec web flask db history
-
-migrate-downgrade-all: ## Откатить все миграции до начала (base)
-	@docker-compose exec web flask db downgrade base
-
-migrate-clean: ## Полностью очистить базу данных (удалить все данные)
-	@docker-compose exec web flask drop-db
-
-migrate-reset: ## Полный сброс: очистить БД, применить миграции, накатить сиды
-	@echo "🔄 Полный сброс базы данных..."
-	@docker-compose exec web flask drop-db
-	@docker-compose exec web flask db migrate -m "Initial migration" || true
-	@docker-compose exec web flask db upgrade
-	@docker-compose exec web flask seed-db
+# Обновлённый полный сброс БД -> make migrate-reset DB_ENV=docker
+migrate-reset: ## Полный сброс: удалить БД, применить миграции, накатить сиды (локально или в Docker)
+	@echo "🔄 Полный сброс базы данных ($(DB_ENV))..."
+ifeq ($(DB_ENV),local)
+	$(MAKE) recreate-db-local
+endif
+	@FLASK_APP=app.core:create_app $(DB_EXEC) db upgrade
+	@FLASK_APP=app.core:create_app $(DB_EXEC) seed-db
 	@echo "✅ База данных сброшена и заполнена тестовыми данными"
 
-migrate-reset-local: ## Полный сброс локально (SQLite)
-	@echo "🔄 Полный сброс локальной базы данных..."
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask drop-db
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db migrate -m "Initial migration" || true
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask db upgrade
-	@unset DATABASE_URL && FLASK_APP=app.core:create_app .venv/bin/flask seed-db
-	@echo "✅ Локальная база данных сброшена и заполнена тестовыми данными"
-
-# ----------------------------------------------------------
+# =====================[ End DB Management ]=====================
 
 kill-port: ## Убить процесс на порту $(DEFAULT_PORT)
 	@lsof -ti:$(DEFAULT_PORT) | xargs kill -9 2>/dev/null || echo "Порт $(DEFAULT_PORT) уже свободен"
